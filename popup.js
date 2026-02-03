@@ -42,12 +42,29 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   });
+  
+  // Add event listener for style buttons toggle
+  document.getElementById('styleButtons').addEventListener('change', function() {
+    const isChecked = this.checked;
+    chrome.storage.sync.set({ 'styleButtons': isChecked });
+    
+    // Send message to content script to apply changes immediately
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+      if (tabs[0] && tabs[0].url && tabs[0].url.includes('rateyourmusic.com')) {
+        chrome.tabs.sendMessage(tabs[0].id, {
+          action: 'toggleButtonStyling',
+          styleButtons: isChecked
+        });
+      }
+    });
+  });
 });
 
 function loadSettings() {
-  chrome.storage.sync.get(['hideIssues', 'defaultToRatings', 'showRatingDescriptions'], function(result) {
+  chrome.storage.sync.get(['hideIssues', 'defaultToRatings', 'showRatingDescriptions', 'styleButtons'], function(result) {
     document.getElementById('hideIssues').checked = result.hideIssues === true;
     document.getElementById('defaultToRatings').checked = result.defaultToRatings === true;
     document.getElementById('showRatingDescriptions').checked = result.showRatingDescriptions === true;
+    document.getElementById('styleButtons').checked = result.styleButtons === true;
   });
 }

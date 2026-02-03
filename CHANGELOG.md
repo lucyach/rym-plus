@@ -1,5 +1,43 @@
 # RYM Plus Extension - Changelog
 
+## v1.2.0 - Button Styling & Modular Architecture
+
+### Features Added
+
+#### 🎨 Form Button Styling
+- **Feature**: Toggle to apply RYM's native button styling to form buttons for visual consistency
+- **Location**: Extension popup → "Style Form Buttons" toggle
+- **What it does**: Applies RYM's standard button classes (`btn blue_btn btn_small`) to navigation and action buttons throughout the site
+- **Default**: Disabled (users must manually enable it)
+- **Page Detection**: Works on all RYM pages where applicable buttons are found
+- **Dynamic Monitoring**: Automatically styles newly added buttons via AJAX/dynamic content loading
+
+**Technical Implementation:**
+- **Smart Button Detection**: Uses CSS selectors to target specific button patterns:
+  - Exact matches: `value=">"`, `value="<"`, `value=">>"`, `value="<<"`
+  - Ending patterns: `value$=" >"`, `value$=" <"`, `value$=" >>"`
+  - HTML entities: `value$="&gt;"`, `value$="&gt;&gt;"`, `value$="&lt;"`
+- **Non-Destructive Styling**: Preserves original classes and inline styles with data attributes
+- **Conflict Prevention**: Removes conflicting CSS properties (height, background, border, color, padding, font) while preserving functional styles like width
+- **Mutation Observer**: Monitors DOM changes to style dynamically loaded buttons
+- **Reversible Changes**: Clean restoration to original state when toggled off
+
+**Button Patterns Styled:**
+- Navigation buttons: `<input type="submit" value=">">`
+- Action buttons: `<input type="button" value="Create list &gt;&gt;">`
+- Pagination controls: `<input type="button" value="<< Previous">`
+- Submit actions ending with navigation symbols
+
+**Architecture Improvements:**
+- **Modular Structure**: Refactored extension into `/features/` folder organization:
+  - `features/issues.js` - Issues section hiding
+  - `features/ratingsView.js` - Default to ratings view
+  - `features/ratingDescriptions.js` - Rating descriptions tooltips  
+  - `features/buttonStyling.js` - Form button styling
+- **Scalable Design**: Easy to add new features by creating new files in `/features/`
+- **Clean Coordination**: Main `content.js` acts as feature coordinator and message router
+- **Load Order Management**: Features load before main script to ensure proper initialization
+
 ## v1.1.0 - Default to Ratings View
 
 ### Features Added

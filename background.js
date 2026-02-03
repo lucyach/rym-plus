@@ -10,7 +10,8 @@ chrome.runtime.onInstalled.addListener((details) => {
     chrome.storage.sync.set({
       'hideIssues': false,
       'defaultToRatings': false,
-      'showRatingDescriptions': false
+      'showRatingDescriptions': false,
+      'styleButtons': false
     });
   }
 });
