@@ -1,3 +1,39 @@
-/* RYM Plus Extension Styles - Simplified for Issues Hiding Only */
+/* RYM Plus Extension Styles - Enhanced for Error Protection */
 
-/* Placeholder for future styling if needed */
+/* Hide broken ad containers to reduce visual noise */
+iframe[src*="doubleclick"]:not([src]),
+iframe[src*="googlesyndication"]:not([src]),
+div[id*="gpt-"]:empty,
+div[class*="ad-"]:empty {
+  display: none !important;
+}
+
+/* Stabilize extension UI during dynamic loading */
+.rym-plus-loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* Extension-specific button styling that won't conflict with page scripts */
+.rym-plus-friend-details-btn,
+.rym-plus-extension-button {
+  background: #1e5399 !important;
+  color: white !important;
+  border: none !important;
+  border-radius: 3px !important;
+  cursor: pointer !important;
+  font-weight: bold !important;
+}
+
+.rym-plus-friend-details-btn:hover,
+.rym-plus-extension-button:hover {
+  background: #2a6bb3 !important;
+}
+
+/* Ensure extension UI is isolated from page errors */
+.rym-plus-friend-details,
+.rym-plus-extension-ui {
+  isolation: isolate;
+  position: relative;
+  z-index: 1000;
+}

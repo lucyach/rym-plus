@@ -1,6 +1,18 @@
 // Content script - runs on RateYourMusic pages
 // Main entry point that coordinates all features
-console.log('RYM Plus extension loaded!');
+
+// Suppress console noise from extension only (not third-party errors)
+const originalConsoleLog = console.log;
+const originalConsoleError = console.error;
+
+// Add global error handler for our extension only
+window.addEventListener('error', (event) => {
+  // Only handle errors from our extension files
+  if (event.filename && event.filename.includes('chrome-extension://')) {
+    console.error('RYM Plus Extension Error:', event.error);
+    event.preventDefault(); // Prevent error from propagating
+  }
+});
 
 // Wait for the page to fully load
 if (document.readyState === 'loading') {
@@ -10,30 +22,36 @@ if (document.readyState === 'loading') {
 }
 
 function initializeExtension() {
-  console.log('Initializing RYM Plus features...');
-  
-  // Wait for all feature modules to be loaded
-  if (typeof window.RYMPlusFeatures === 'undefined') {
-    console.log('Feature modules not loaded yet, retrying...');
-    setTimeout(initializeExtension, 100);
-    return;
-  }
-  
-  // Initialize each feature
-  if (window.RYMPlusFeatures.issues) {
-    window.RYMPlusFeatures.issues.handle();
-  }
-  
-  if (window.RYMPlusFeatures.ratingsView) {
-    window.RYMPlusFeatures.ratingsView.handle();
-  }
-  
-  if (window.RYMPlusFeatures.ratingDescriptions) {
-    window.RYMPlusFeatures.ratingDescriptions.handle();
-  }
-  
-  if (window.RYMPlusFeatures.buttonStyling) {
-    window.RYMPlusFeatures.buttonStyling.handle();
+  try {
+    // Wait for all feature modules to be loaded
+    if (typeof window.RYMPlusFeatures === 'undefined') {
+      setTimeout(initializeExtension, 100);
+      return;
+    }
+    
+    // Initialize each feature with error handling
+    const features = [
+      { name: 'issues', feature: window.RYMPlusFeatures.issues },
+      { name: 'ratingsView', feature: window.RYMPlusFeatures.ratingsView },
+      { name: 'ratingDescriptions', feature: window.RYMPlusFeatures.ratingDescriptions },
+      { name: 'buttonStyling', feature: window.RYMPlusFeatures.buttonStyling },
+      { name: 'friendRatings', feature: window.RYMPlusFeatures.friendRatings }
+    ];
+    
+    features.forEach(({ name, feature }) => {
+      try {
+        if (feature && feature.handle) {
+          feature.handle();
+        } else if (feature && feature.init) {
+          feature.init();
+        }
+      } catch (error) {
+        console.error(`RYM Plus: Error initializing ${name} feature:`, error);
+      }
+    });
+    
+  } catch (error) {
+    console.error('RYM Plus: Error during extension initialization:', error);
   }
 }
 

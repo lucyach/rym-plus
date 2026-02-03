@@ -11,7 +11,6 @@ function handleButtonStyling() {
 }
 
 function toggleButtonStyling(enable) {
-  console.log('toggleButtonStyling called with:', enable);
   
   if (enable) {
     applyButtonStyling();
@@ -21,7 +20,6 @@ function toggleButtonStyling(enable) {
 }
 
 function applyButtonStyling() {
-  console.log('Applying RYM button styling...');
   
   // Target input buttons with navigation symbols (exact matches and those ending with symbols)
   const buttonSelectors = [
@@ -84,23 +82,14 @@ function applyButtonStyling() {
       }
       
       styledCount++;
-      console.log('Styled navigation button:', button.outerHTML.substring(0, 100));
     });
   });
   
   // Also handle buttons that might be added dynamically
   observeForNewButtons();
-  
-  if (styledCount > 0) {
-    console.log(`RYM Plus: Successfully styled ${styledCount} navigation button(s)`);
-  } else {
-    console.log('RYM Plus: No navigation buttons found to style');
-  }
 }
 
-function removeButtonStyling() {
-  console.log('Removing RYM button styling...');
-  
+function removeButtonStyling() {  
   // Remove styling from previously styled buttons
   const styledButtons = document.querySelectorAll('.rym-plus-styled-button');
   styledButtons.forEach(button => {
@@ -129,8 +118,6 @@ function removeButtonStyling() {
     window.rymPlusButtonObserver.disconnect();
     window.rymPlusButtonObserver = null;
   }
-  
-  console.log(`RYM Plus: Removed styling from ${styledButtons.length} button(s)`);
 }
 
 function observeForNewButtons() {
@@ -222,7 +209,6 @@ function observeForNewButtons() {
     });
     
     if (newButtonsFound) {
-      console.log('RYM Plus: Styled newly added navigation button(s)');
     }
   });
   
