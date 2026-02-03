@@ -10,7 +10,8 @@ chrome.runtime.onInstalled.addListener((details) => {
     chrome.storage.sync.set({
       'rymPlusEnabled': true,
       'enhanceRatings': true,
-      'customTheme': false
+      'customTheme': false,
+      'hideIssues': false
     });
   }
 });
