@@ -8,41 +8,14 @@ chrome.runtime.onInstalled.addListener((details) => {
     
     // Set default settings
     chrome.storage.sync.set({
-      'rymPlusEnabled': true,
-      'enhanceRatings': true,
-      'customTheme': false,
       'hideIssues': false
     });
   }
 });
 
-// Listen for tab updates to inject content script if needed
+// Listen for tab updates to show extension is active
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (changeInfo.status === 'complete' && tab.url && tab.url.includes('rateyourmusic.com')) {
     console.log('RateYourMusic page loaded');
-    
-    // You can perform additional actions when RYM pages load
-    chrome.action.setBadgeText({
-      text: '✓',
-      tabId: tabId
-    });
   }
-});
-
-// Handle messages from content script
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.action === 'saveRating') {
-    // Handle saving rating data
-    console.log('Saving rating:', request.data);
-    
-    chrome.storage.local.get('rymRatings', (result) => {
-      const ratings = result.rymRatings || [];
-      ratings.push(request.data);
-      chrome.storage.local.set({ 'rymRatings': ratings });
-    });
-    
-    sendResponse({ success: true });
-  }
-  
-  return true; // Keep message channel open for async response
 });
