@@ -1,0 +1,104 @@
+/* RYM Plus Extension Styles */
+
+.rym-plus-active {
+  /* Global styles when extension is active */
+}
+
+.rym-plus-button {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: bold;
+  margin: 10px 0;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.rym-plus-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+  background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+}
+
+/* Enhanced rating interface */
+.ui_rating_button.rym-plus-enhanced {
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+.ui_rating_button.rym-plus-enhanced:hover {
+  transform: scale(1.05);
+}
+
+.ui_rating_button.rym-plus-enhanced::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border: 2px solid #667eea;
+  border-radius: 4px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.ui_rating_button.rym-plus-enhanced:hover::after {
+  opacity: 1;
+}
+
+/* Custom theme styles */
+.rym-plus-dark-theme {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+.rym-plus-dark-theme img,
+.rym-plus-dark-theme video,
+.rym-plus-dark-theme iframe {
+  filter: invert(1) hue-rotate(180deg);
+}
+
+/* Enhanced album page */
+.rym-plus-album-enhancement {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+  padding: 15px;
+  border-radius: 8px;
+  margin: 15px 0;
+  box-shadow: 0 4px 15px rgba(240, 147, 251, 0.3);
+}
+
+.rym-plus-stats-widget {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 15px;
+  margin: 10px 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.rym-plus-stats-title {
+  font-weight: bold;
+  color: #2d3748;
+  margin-bottom: 10px;
+}
+
+/* Animation for new features */
+@keyframes rymPlusSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.rym-plus-new-feature {
+  animation: rymPlusSlideIn 0.5s ease-out;
+}
