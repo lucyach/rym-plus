@@ -9,7 +9,8 @@ chrome.runtime.onInstalled.addListener((details) => {
     // Set default settings
     chrome.storage.sync.set({
       'hideIssues': false,
-      'defaultToRatings': false
+      'defaultToRatings': false,
+      'showRatingDescriptions': false
     });
   }
 });
