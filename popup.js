@@ -27,12 +27,21 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   });
+  
+  // Add event listener for default to ratings toggle
+  document.getElementById('defaultToRatings').addEventListener('change', function() {
+    const isChecked = this.checked;
+    chrome.storage.sync.set({ 'defaultToRatings': isChecked });
+    console.log('Default to ratings setting saved:', isChecked);
+  });
 });
 
 function loadSettings() {
-  chrome.storage.sync.get(['hideIssues'], function(result) {
+  chrome.storage.sync.get(['hideIssues', 'defaultToRatings'], function(result) {
     console.log('Loaded settings:', result);
     document.getElementById('hideIssues').checked = result.hideIssues === true;
+    document.getElementById('defaultToRatings').checked = result.defaultToRatings === true;
     console.log('Hide issues checkbox set to:', result.hideIssues === true);
+    console.log('Default to ratings checkbox set to:', result.defaultToRatings === true);
   });
 }

@@ -1,5 +1,23 @@
 # RYM Plus Extension - Changelog
 
+## v1.1.0 - Default to Ratings View
+
+### Features Added
+
+#### 📊 Default to Ratings View
+- **Feature**: Toggle to automatically switch to "ratings" tab when visiting user profiles
+- **Location**: Extension popup → "Default to Ratings View" toggle
+- **What it does**: Instead of showing "recent" albums by default, automatically clicks the "ratings" button on user profile pages
+- **Default**: Disabled (users must manually enable it)
+- **Page Detection**: Only activates on user profile pages (URLs containing `/~username` or `/user/username`)
+- **Auto-switch Timing**: 500ms delay to ensure page elements are fully loaded
+
+**Technical Implementation:**
+- **User Profile Detection**: Regex matching for `/~` and `/user/` URL patterns
+- **Auto-click Functionality**: Targets `#btnmusicrating` element and simulates click
+- **Settings Integration**: Added to Chrome sync storage alongside existing settings
+- **Popup Interface**: Added second toggle switch with consistent styling
+
 ## v1.0.0 - Initial Release
 
 ### Features Added

@@ -11,11 +11,20 @@ if (document.readyState === 'loading') {
 function initializeExtension() {
   console.log('Initializing RYM Plus features...');
   
-  // Only handle issues section hiding
+  // Handle issues section hiding (only on album/release pages)
   handleIssuesSection();
+  
+  // Handle default to ratings view (only on user profile pages)
+  handleDefaultToRatings();
 }
 
 function handleIssuesSection() {
+  // Only hide issues on album/release pages, not on user profiles or other pages
+  if (!window.location.pathname.includes('/release/') && !window.location.pathname.includes('/album/')) {
+    console.log('Not on an album/release page - skipping issues section hiding');
+    return;
+  }
+  
   // Get user preference for hiding issues
   chrome.storage.sync.get(['hideIssues'], function(result) {
     console.log('handleIssuesSection - hideIssues setting:', result.hideIssues);
@@ -26,14 +35,10 @@ function handleIssuesSection() {
 function toggleIssuesSection(hide) {
   console.log('toggleIssuesSection called with hide =', hide);
   
-  // Find ALL issues sections (there might be multiple)
+  // More specific selectors - avoid the broad [class*="issues"] that was causing problems
   const issuesSelectors = [
     '.section_issues.section_outer',
     '.section_issues',
-    '.album_issues',
-    '.release_issues', 
-    '.issues_section',
-    '[class*="issues"]',
     '.marketplace_section',
     '.purchase_section'
   ];
@@ -56,14 +61,15 @@ function toggleIssuesSection(hide) {
     }
   }
   
-  // Fallback: look for sections containing purchase-related text
+  // More careful fallback: only look for sections with specific marketplace/purchase indicators
   if (removedCount === 0) {
     console.log('Trying fallback method to find issues section...');
-    const sections = document.querySelectorAll('div, section, table');
+    const sections = document.querySelectorAll('div[class*="section"]');
     for (const section of sections) {
       const text = section.textContent.toLowerCase();
-      if ((text.includes('buy') || text.includes('purchase') || text.includes('marketplace') || text.includes('available') || text.includes('format')) && 
-          section.querySelectorAll('a').length > 2) {
+      // More specific criteria - must contain purchase-specific terms AND have multiple links
+      if ((text.includes('marketplace') || text.includes('buy this') || text.includes('purchase')) && 
+          section.querySelectorAll('a').length > 3) {
         
         if (hide) {
           console.log('Removing fallback element:', section.outerHTML.substring(0, 100));
@@ -78,15 +84,6 @@ function toggleIssuesSection(hide) {
     console.log(`RYM Plus: Successfully removed ${removedCount} issues section(s)`);
   } else {
     console.log('RYM Plus: No issues sections found to remove');
-    
-    // Debug: log all section elements
-    const allSections = document.querySelectorAll('[class*="section"]');
-    console.log('All elements with "section" in class name:', 
-      Array.from(allSections).map(el => ({
-        className: el.className,
-        text: el.textContent.substring(0, 50)
-      }))
-    );
   }
 }
 
@@ -97,3 +94,34 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     sendResponse({ success: true });
   }
 });
+
+function handleDefaultToRatings() {
+  // Only apply on user profile pages (URLs like /~username or /user/username)
+  if (!window.location.pathname.match(/\/(~|user\/)/)) {
+    console.log('Not on a user profile page - skipping default to ratings');
+    return;
+  }
+  
+  // Get user preference for defaulting to ratings view
+  chrome.storage.sync.get(['defaultToRatings'], function(result) {
+    console.log('handleDefaultToRatings - defaultToRatings setting:', result.defaultToRatings);
+    
+    if (result.defaultToRatings === true) {
+      // Wait a moment for the page to fully load, then click the ratings button
+      setTimeout(() => {
+        switchToRatingsView();
+      }, 500);
+    }
+  });
+}
+
+function switchToRatingsView() {
+  const ratingsButton = document.getElementById('btnmusicrating');
+  
+  if (ratingsButton) {
+    console.log('RYM Plus: Switching to ratings view');
+    ratingsButton.click();
+  } else {
+    console.log('RYM Plus: Ratings button not found - may not be on a user profile with music');
+  }
+}
