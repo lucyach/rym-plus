@@ -4,7 +4,53 @@
 
 ### Features Added
 
-#### 📊 Default to Ratings View
+#### � Show Rating Descriptions
+- **Feature**: Toggle to display custom rating descriptions as tooltips when hovering over star ratings
+- **Location**: Extension popup → "Show Rating Descriptions" toggle
+- **What it does**: Shows your personalized rating descriptions from your rating system when you hover over star ratings on album/release pages
+- **Default**: Disabled (users must manually enable it)
+- **Page Detection**: Only activates on album/release pages (URLs containing `/release/` or `/album/`)
+- **Tooltip Display**: Real-time tooltip positioning that follows mouse movement across rating stars
+
+**Technical Implementation:**
+- **Rating System Integration**: Fetches user's custom rating descriptions from `/account/rating_system_2` page
+- **Dynamic Tooltip Creation**: Creates positioned tooltips with smooth hover interactions
+- **Rating Calculation**: Converts mouse position to corresponding rating value (0.5 to 5.0 scale)
+- **Caching System**: Stores fetched descriptions in Chrome local storage for performance
+- **Fallback Descriptions**: Provides default rating descriptions if custom ones aren't available
+- **DOM Manipulation**: Adds/removes tooltip elements without interfering with site functionality
+
+**How Rating Descriptions Feature Was Created:**
+
+1. **Initial Analysis**: 
+   - Studied RateYourMusic's rating interface structure (`#my_catalog .my_catalog_rating`)
+   - Identified the rating stars container (`.rating_stars`) for hover detection
+   - Analyzed the user's rating system page format (`/account/rating_system_2`)
+
+2. **Rating System Discovery**:
+   - Found that RYM stores custom descriptions in input fields with IDs `#sm1` through `#sm10`
+   - Mapped numeric ratings (0.5-5.0) to RYM's internal keys (`sm1`-`sm10`)
+   - Created conversion system: 0.5★ = sm1, 1.0★ = sm2, ..., 5.0★ = sm10
+
+3. **Tooltip Implementation Process**:
+   - **Positioning Challenge**: Initially tried relative positioning, but RYM's CSS interfered
+   - **Solution**: Used fixed positioning with `getBoundingClientRect()` for accurate placement
+   - **Mouse Tracking**: Implemented real-time mouse position calculation within star container
+   - **Rating Detection**: Created algorithm to convert mouse X position to rating value
+
+4. **Data Fetching Strategy**:
+   - **Primary Method**: Fetch user's rating system page via GET request to `/account/rating_system_2`
+   - **HTML Parsing**: Used `DOMParser` to extract custom descriptions from input fields
+   - **Error Handling**: Implemented fallback system with predefined descriptions
+   - **Caching**: Store descriptions in Chrome local storage to avoid repeated API calls
+
+5. **Integration Challenges Overcome**:
+   - **Event Conflicts**: Ensured extension tooltips don't interfere with RYM's existing rating UI
+   - **CSS Isolation**: Used high z-index (999999) and specific styling to prevent conflicts
+   - **Performance**: Implemented efficient hover detection without impacting site performance
+   - **Memory Management**: Proper cleanup of tooltip elements when feature is disabled
+
+#### �📊 Default to Ratings View
 - **Feature**: Toggle to automatically switch to "ratings" tab when visiting user profiles
 - **Location**: Extension popup → "Default to Ratings View" toggle
 - **What it does**: Instead of showing "recent" albums by default, automatically clicks the "ratings" button on user profile pages
