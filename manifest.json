@@ -18,6 +18,7 @@
         "src/features/ratingsView.js", 
         "src/features/ratingDescriptions.js",
         "src/features/buttonStyling.js",
+        "src/features/userProfileStyling.js",
         "src/content.js"
       ],
       "css": ["src/styles.css"],

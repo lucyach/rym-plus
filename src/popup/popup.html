@@ -2,110 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-  <style>
-    body {
-      width: 300px;
-      padding: 20px;
-      font-family: "ProximaNova", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial;
-      font-weight: bold;
-      background: #f5f5f5;
-    }
-    
-    .header {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-    
-    .logo {
-      font-size: 24px;
-      font-weight: bold;
-      color: #1a365d;
-      margin-bottom: 5px;
-    }
-    
-    .subtitle {
-      color: #666;
-      font-size: 12px;
-    }
-    
-    .feature-toggle {
-      margin: 10px 0;
-      padding: 12px;
-      background: white;
-      border-radius: 6px;
-      border: 1px solid #e2e8f0;
-    }
-    
-    .toggle-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 5px;
-    }
-    
-    .feature-label {
-      font-size: 14px;
-      color: #2d3748;
-    }
-    
-    .feature-description {
-      font-size: 11px;
-      color: #666;
-      line-height: 1.3;
-      margin-top: 2px;
-    }
-    
-    .toggle-switch {
-      position: relative;
-      width: 44px;
-      height: 24px;
-    }
-    
-    .toggle-switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-    
-    .slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: #ccc;
-      transition: .4s;
-      border-radius: 24px;
-    }
-    
-    .slider:before {
-      position: absolute;
-      content: "";
-      height: 18px;
-      width: 18px;
-      left: 3px;
-      bottom: 3px;
-      background-color: white;
-      transition: .4s;
-      border-radius: 50%;
-    }
-    
-    input:checked + .slider {
-      background-color: #1e5399;
-    }
-    
-    input:checked + .slider:before {
-      transform: translateX(20px);
-    }
-    
-    .footer {
-      text-align: center;
-      margin-top: 15px;
-      font-size: 11px;
-      color: #999;
-    }
-  </style>
+  <link rel="stylesheet" href="popup.css">
 </head>
 <body>
   <div class="header">
@@ -121,7 +18,7 @@
         <span class="slider"></span>
       </label>
     </div>
-    <div class="feature-description">Removes the issues section from album pages</div>
+    <div class="feature-description">Remove the issues section from album pages</div>
   </div>
   
   <div class="feature-toggle">
@@ -143,18 +40,18 @@
         <span class="slider"></span>
       </label>
     </div>
-    <div class="feature-description">Display your custom rating descriptions as you hover over star ratings on album pages</div>
+    <div class="feature-description">Display your rating descriptions as you hover over star ratings on album pages</div>
   </div>
   
   <div class="feature-toggle">
     <div class="toggle-row">
-      <span class="feature-label">Style Buttons</span>
+      <span class="feature-label">Spacing and Styling</span>
       <label class="toggle-switch">
-        <input type="checkbox" id="styleButtons">
+        <input type="checkbox" id="fixProfileStyling">
         <span class="slider"></span>
       </label>
     </div>
-    <div class="feature-description">Apply RYM's native button styling to all buttons</div>
+    <div class="feature-description">Fix spacing and styling issues and inconsistencies across RateYourMusic pages</div>
   </div>
   
   <div class="footer">

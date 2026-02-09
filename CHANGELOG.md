@@ -1,5 +1,43 @@
 # RYM Plus Extension - Changelog
 
+## v1.3.0 - Spacing and Styling Improvements
+
+### Features Added
+
+#### 🎨 Comprehensive Spacing and Styling
+- **Feature**: Combined toggle for spacing fixes and button styling across RateYourMusic
+- **Location**: Extension popup → "Spacing and Styling" toggle  
+- **What it does**: 
+  - **User Profile Fixes**: Resizes compatibility list boxes to prevent overflow
+  - **Tab Spacing**: Adds proper spacing between music toolbar buttons and content tabs
+  - **Button Styling**: Applies RYM's native styling to navigation buttons
+  - **Comment Button Styling**: Makes "Write a Comment" buttons blue with hover effects
+- **Default**: Enabled (improves visual consistency by default)
+- **Page Detection**: Works on user profile pages and across all RYM pages
+
+**Technical Implementation:**
+- **Profile Styling**: 
+  - Targets compatibility list tables with `max-width: 500px` and proper text wrapping
+  - Adds 10px spacing between music toolbar and tab content
+  - Uses mutation observer for dynamic content
+- **Button Enhancements**: 
+  - Navigation buttons get full RYM styling (`btn blue_btn btn_small`)
+  - Comment buttons get blue background with centered text and hover effects
+  - Excludes comment buttons from navigation styling to prevent width conflicts
+  - CSS overrides ensure proper button sizing
+- **Combined Control**: Single toggle manages both profile and button styling features
+- **Architecture**: New `userProfileStyling.js` feature coordinates with existing `buttonStyling.js`
+
+### UI Improvements
+- **Popup Redesign**: Separated CSS into dedicated `popup.css` file for better maintainability
+- **Simplified Interface**: Reduced from 5 toggles to 4 by combining related features
+- **Clear Descriptions**: Updated toggle descriptions to reflect comprehensive functionality
+
+### Architecture Enhancements  
+- **File Organization**: Added `src/popup/popup.css` for cleaner separation of concerns
+- **Feature Integration**: Cross-feature communication between styling modules
+- **Storage Sync**: Unified settings management for related features
+
 ## v1.2.0 - Button Styling & Modular Architecture
 
 ### Features Added
