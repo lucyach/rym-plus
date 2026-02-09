@@ -11,6 +11,7 @@ chrome.runtime.onInstalled.addListener((details) => {
       'hideIssues': false,
       'defaultToRatings': false,
       'showRatingDescriptions': false,
+      'blockAds': false,
       'fixProfileStyling': true,
       'styleButtons': true  // Synced with fixProfileStyling
     });

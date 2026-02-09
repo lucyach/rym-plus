@@ -17,6 +17,7 @@
         "src/features/issues.js",
         "src/features/ratingsView.js", 
         "src/features/ratingDescriptions.js",
+        "src/features/adBlocker.js",
         "src/features/buttonStyling.js",
         "src/features/userProfileStyling.js",
         "src/content.js"

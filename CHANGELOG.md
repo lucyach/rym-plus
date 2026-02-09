@@ -1,5 +1,36 @@
 # RYM Plus Extension - Changelog
 
+## v1.4.0 - Advertisement Blocking
+
+### Features Added
+
+#### 🚫 Ad Blocker
+- **Feature**: Precise advertisement blocking system for RateYourMusic pages
+- **Location**: Extension popup → "Block Advertisements" toggle
+- **What it does**: 
+  - **Video Ad Removal**: Targets Playwire video ads (`.pw-corner-ad-video`, `.pw-ad-scroll-container`)
+  - **Display Ad Blocking**: Removes Google Publisher Tag ads (`div[id^="frame-div-gpt-ad"]`)
+  - **Network Blocking**: Intercepts ad requests to doubleclick.net, googleads.com, playwire.com
+  - **Content Protection**: Preserves essential RYM content (album info, profiles, navigation)
+  - **Dynamic Monitoring**: Removes ads that load after initial page load
+- **Default**: Disabled (users must manually enable it)
+- **Page Detection**: Works on all RateYourMusic pages
+
+**Technical Implementation:**
+- **Precise Targeting**: Uses specific selectors to avoid removing legitimate content
+- **Content Protection**: `isEssentialRYMContent()` function protects core page elements
+- **CSS Injection**: Injects targeted CSS rules with `!important` declarations
+- **Network Interception**: Overrides `window.fetch` to block ad network requests  
+- **Reversible Blocking**: Elements are hidden, not removed, allowing restoration when disabled
+- **Safe Restoration**: `restoreBlockedElements()` brings back content when feature is toggled off
+- **MutationObserver**: Monitors for dynamically loaded ads with conservative pattern matching
+- **Architecture**: New `adBlocker.js` feature module integrated with extension popup
+
+### UI Improvements
+- **New Toggle**: Added "Block Advertisements" option to extension popup
+- **User Feedback**: Clear description noting it "Might not work perfectly on all ads"
+- **Settings Persistence**: Ad blocker preference saved across browser sessions
+
 ## v1.3.0 - Spacing and Styling Improvements
 
 ### Features Added

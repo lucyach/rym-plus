@@ -34,6 +34,7 @@ function initializeExtension() {
       { name: 'issues', feature: window.RYMPlusFeatures.issues },
       { name: 'ratingsView', feature: window.RYMPlusFeatures.ratingsView },
       { name: 'ratingDescriptions', feature: window.RYMPlusFeatures.ratingDescriptions },
+      { name: 'adBlocker', feature: window.RYMPlusFeatures.adBlocker },
       { name: 'buttonStyling', feature: window.RYMPlusFeatures.buttonStyling },
       { name: 'userProfileStyling', feature: window.RYMPlusFeatures.userProfileStyling },
       { name: 'friendRatings', feature: window.RYMPlusFeatures.friendRatings }
@@ -63,6 +64,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     sendResponse({ success: true });
   } else if (request.action === 'toggleRatingDescriptions' && window.RYMPlusFeatures.ratingDescriptions) {
     window.RYMPlusFeatures.ratingDescriptions.toggle(request.showRatingDescriptions);
+    sendResponse({ success: true });
+  } else if (request.action === 'toggleAdBlocking' && window.RYMPlusFeatures.adBlocker) {
+    window.RYMPlusFeatures.adBlocker.toggle(request.blockAds);
     sendResponse({ success: true });
   } else if (request.action === 'toggleProfileStyling' && window.RYMPlusFeatures.userProfileStyling) {
     window.RYMPlusFeatures.userProfileStyling.toggle(request.fixProfileStyling);

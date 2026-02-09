@@ -43,6 +43,22 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
   
+  // Add event listener for block ads toggle
+  document.getElementById('blockAds').addEventListener('change', function() {
+    const isChecked = this.checked;
+    chrome.storage.sync.set({ 'blockAds': isChecked });
+    
+    // Send message to content script to apply changes immediately
+    chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+      if (tabs[0] && tabs[0].url && tabs[0].url.includes('rateyourmusic.com')) {
+        chrome.tabs.sendMessage(tabs[0].id, {
+          action: 'toggleAdBlocking',
+          blockAds: isChecked
+        });
+      }
+    });
+  });
+  
   // Add event listener for fix profile styling toggle
   document.getElementById('fixProfileStyling').addEventListener('change', function() {
     const isChecked = this.checked;
@@ -64,10 +80,11 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function loadSettings() {
-  chrome.storage.sync.get(['hideIssues', 'defaultToRatings', 'showRatingDescriptions', 'fixProfileStyling'], function(result) {
+  chrome.storage.sync.get(['hideIssues', 'defaultToRatings', 'showRatingDescriptions', 'blockAds', 'fixProfileStyling'], function(result) {
     document.getElementById('hideIssues').checked = result.hideIssues === true;
     document.getElementById('defaultToRatings').checked = result.defaultToRatings === true;
     document.getElementById('showRatingDescriptions').checked = result.showRatingDescriptions === true;
+    document.getElementById('blockAds').checked = result.blockAds === true;
     document.getElementById('fixProfileStyling').checked = result.fixProfileStyling === true;
   });
 }
