@@ -35,6 +35,7 @@ function initializeExtension() {
       { name: 'ratingsView', feature: window.RYMPlusFeatures.ratingsView },
       { name: 'ratingDescriptions', feature: window.RYMPlusFeatures.ratingDescriptions },
       { name: 'buttonStyling', feature: window.RYMPlusFeatures.buttonStyling },
+      { name: 'userProfileStyling', feature: window.RYMPlusFeatures.userProfileStyling },
       { name: 'friendRatings', feature: window.RYMPlusFeatures.friendRatings }
     ];
     
@@ -63,8 +64,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   } else if (request.action === 'toggleRatingDescriptions' && window.RYMPlusFeatures.ratingDescriptions) {
     window.RYMPlusFeatures.ratingDescriptions.toggle(request.showRatingDescriptions);
     sendResponse({ success: true });
-  } else if (request.action === 'toggleButtonStyling' && window.RYMPlusFeatures.buttonStyling) {
-    window.RYMPlusFeatures.buttonStyling.toggle(request.styleButtons);
+  } else if (request.action === 'toggleProfileStyling' && window.RYMPlusFeatures.userProfileStyling) {
+    window.RYMPlusFeatures.userProfileStyling.toggle(request.fixProfileStyling);
     sendResponse({ success: true });
   } else {
     sendResponse({ success: false, error: 'Unknown action or feature not loaded' });

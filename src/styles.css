@@ -37,3 +37,47 @@ div[class*="ad-"]:empty {
   position: relative;
   z-index: 1000;
 }
+
+/* User Profile Styling Improvements */
+table.mbgen[data-rym-plus-styled] {
+  overflow-wrap: break-word !important;
+  word-wrap: break-word !important;
+  table-layout: auto !important;
+}
+
+/* Compatibility list specific styling */
+table.mbgen[data-rym-plus-styled] td {
+  max-width: 500px !important;
+  overflow-wrap: break-word !important;
+  word-wrap: break-word !important;
+  white-space: normal !important;
+}
+
+table.mbgen[data-rym-plus-styled] td b {
+  display: block !important;
+  overflow-wrap: break-word !important;
+  word-wrap: break-word !important;
+  line-height: 1.2 !important;
+}
+
+/* Ensure comment buttons maintain full width */
+.rym-plus-comment-styled {
+  width: 100% !important;
+  margin: 0 !important;
+  box-sizing: border-box !important;
+  text-align: center !important;
+  cursor: pointer !important;
+  transition: background-color 0.2s ease !important;
+}
+
+/* Hover effect for comment buttons */
+.rym-plus-comment-styled:hover {
+  background-color: #2a6bb3 !important;
+}
+
+/* Override btn_small width restrictions for comment buttons */
+input.rym-plus-comment-styled.btn_small {
+  width: 100% !important;
+  max-width: none !important;
+  min-width: 100% !important;
+}

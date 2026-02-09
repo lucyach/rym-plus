@@ -44,7 +44,9 @@ function applyButtonStyling() {
     'input[type="submit"][value$="&lt;"]',    // Ending with HTML entity &lt;
     'input[type="button"][value$="&lt;"]',   // Ending with HTML entity &lt;
     'input[type="submit"][value$="&gt;&gt;"]',  // Ending with &gt;&gt;
-    'input[type="button"][value$="&gt;&gt;"]'   // Ending with &gt;&gt;
+    'input[type="button"][value$="&gt;&gt;"]',   // Ending with &gt;&gt;
+    'input[type="button"][value="Write a Comment"]',  // Write a Comment button
+    'input[type="submit"][value="Write a Comment"]'   // Write a Comment button
   ];
   
   let styledCount = 0;
@@ -52,8 +54,10 @@ function applyButtonStyling() {
   buttonSelectors.forEach(selector => {
     const buttons = document.querySelectorAll(selector);
     buttons.forEach(button => {
-      // Skip if already styled
-      if (button.classList.contains('rym-plus-styled-button')) {
+      // Skip if already styled or if it's a comment button
+      if (button.classList.contains('rym-plus-styled-button') || 
+          button.id === 'shoutbox_dummybutton' || 
+          button.value === 'Write a Comment') {
         return;
       }
       
@@ -85,6 +89,24 @@ function applyButtonStyling() {
     });
   });
   
+  // Style comment buttons separately (just blue background, keep original size)
+  const commentButtons = document.querySelectorAll('#shoutbox_dummybutton, input[value="Write a Comment"]');
+  commentButtons.forEach(button => {
+    if (!button.classList.contains('rym-plus-comment-styled')) {
+      button.classList.add('rym-plus-comment-styled');
+      
+      // Store original styles
+      const originalStyle = button.getAttribute('style') || '';
+      button.setAttribute('data-rym-plus-original-style', originalStyle);
+      
+      // Add blue background, centering, and ensure it fills container
+      const newStyle = originalStyle + '; background-color: #1e5399 !important; color: white !important; height: 50px !important; width: 100% !important; margin: 0 !important; padding: 0 !important; box-sizing: border-box !important; text-align: center !important; cursor: pointer !important;';
+      button.setAttribute('style', newStyle);
+      
+      styledCount++;
+    }
+  });
+  
   // Also handle buttons that might be added dynamically
   observeForNewButtons();
 }
@@ -111,6 +133,19 @@ function removeButtonStyling() {
     } else {
       button.removeAttribute('style');
     }
+  });
+  
+  // Remove styling from comment buttons
+  const styledCommentButtons = document.querySelectorAll('.rym-plus-comment-styled');
+  styledCommentButtons.forEach(button => {
+    const originalStyle = button.getAttribute('data-rym-plus-original-style');
+    if (originalStyle) {
+      button.setAttribute('style', originalStyle);
+      button.removeAttribute('data-rym-plus-original-style');
+    } else {
+      button.removeAttribute('style');
+    }
+    button.classList.remove('rym-plus-comment-styled');
   });
   
   // Stop observing for new buttons
@@ -177,6 +212,11 @@ function observeForNewButtons() {
             
             // Style any new navigation buttons found
             navButtons.forEach(button => {
+              // Skip if it's a comment button
+              if (button.id === 'shoutbox_dummybutton' || button.value === 'Write a Comment') {
+                return;
+              }
+              
               if (!button.classList.contains('rym-plus-styled-button')) {
                 // Store original classes and styles
                 const originalClasses = Array.from(button.classList);
@@ -200,6 +240,28 @@ function observeForNewButtons() {
                 
                 // Apply RYM button classes
                 button.className = 'btn blue_btn btn_small rym-plus-styled-button';
+                newButtonsFound = true;
+              }
+            });
+            
+            // Also check for comment buttons
+            const commentButtons = [];
+            if (node.matches && (node.matches('#shoutbox_dummybutton') || node.matches('input[value="Write a Comment"]'))) {
+              commentButtons.push(node);
+            }
+            if (node.querySelectorAll) {
+              const childCommentButtons = node.querySelectorAll('#shoutbox_dummybutton, input[value="Write a Comment"]');
+              commentButtons.push(...childCommentButtons);
+            }
+            
+            // Style comment buttons
+            commentButtons.forEach(button => {
+              if (!button.classList.contains('rym-plus-comment-styled')) {
+                const originalStyle = button.getAttribute('style') || '';
+                button.setAttribute('data-rym-plus-original-style', originalStyle);
+                const newStyle = originalStyle + '; background-color: #1e5399 !important; color: white !important; height: 50px !important; width: 100% !important; margin: 0 !important; padding: 0 !important; box-sizing: border-box !important; text-align: center !important; cursor: pointer !important;';
+                button.setAttribute('style', newStyle);
+                button.classList.add('rym-plus-comment-styled');
                 newButtonsFound = true;
               }
             });

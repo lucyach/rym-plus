@@ -5,7 +5,7 @@
 - **Hide Issues Section**: Remove marketplace/purchase sections from album pages
 - **Default to Ratings View**: Automatically switch to the ratings tab on user profiles
 - **Rating Descriptions**: Show custom tooltips for rating meanings
-- **Button Styling**: Apply RYM's native styling to navigation buttons
+- **Spacing and Styling**: Fix spacing issues and apply RYM's native styling across pages
 
 ## Usage
 
@@ -24,10 +24,12 @@ rym-plus/
 │   │   ├── issues.js
 │   │   ├── ratingsView.js
 │   │   ├── ratingDescriptions.js
-│   │   └── buttonStyling.js
+│   │   ├── buttonStyling.js
+│   │   └── userProfileStyling.js
 │   └── popup/             # Extension popup
 │       ├── popup.html
-│       └── popup.js
+│       ├── popup.js
+│       └── popup.css
 ├── icons/                 # Extension icons
 └── CHANGELOG.md          # Version history
 ```
