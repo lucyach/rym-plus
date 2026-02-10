@@ -36,8 +36,7 @@ function initializeExtension() {
       { name: 'ratingDescriptions', feature: window.RYMPlusFeatures.ratingDescriptions },
       { name: 'adBlocker', feature: window.RYMPlusFeatures.adBlocker },
       { name: 'buttonStyling', feature: window.RYMPlusFeatures.buttonStyling },
-      { name: 'userProfileStyling', feature: window.RYMPlusFeatures.userProfileStyling },
-      { name: 'friendRatings', feature: window.RYMPlusFeatures.friendRatings }
+      { name: 'userProfileStyling', feature: window.RYMPlusFeatures.userProfileStyling }
     ];
     
     features.forEach(({ name, feature }) => {
@@ -48,29 +47,50 @@ function initializeExtension() {
           feature.init();
         }
       } catch (error) {
-        console.error(`RYM Plus: Error initializing ${name} feature:`, error);
       }
     });
     
+    // Initialize upcoming releases feature separately (direct function call)
+    try {
+      if (typeof window.initUpcomingReleasesFilter === 'function') {
+        window.initUpcomingReleasesFilter();
+      }
+    } catch (error) {
+    }
+    
   } catch (error) {
-    console.error('RYM Plus: Error during extension initialization:', error);
   }
 }
 
 // Listen for messages from popup
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  if (request.action === 'toggleIssues' && window.RYMPlusFeatures.issues) {
+  if (request.action === 'toggleIssues' && window.RYMPlusFeatures?.issues) {
     window.RYMPlusFeatures.issues.toggle(request.hideIssues);
     sendResponse({ success: true });
-  } else if (request.action === 'toggleRatingDescriptions' && window.RYMPlusFeatures.ratingDescriptions) {
+  } else if (request.action === 'toggleRatingDescriptions' && window.RYMPlusFeatures?.ratingDescriptions) {
     window.RYMPlusFeatures.ratingDescriptions.toggle(request.showRatingDescriptions);
     sendResponse({ success: true });
-  } else if (request.action === 'toggleAdBlocking' && window.RYMPlusFeatures.adBlocker) {
+  } else if (request.action === 'toggleAdBlocking' && window.RYMPlusFeatures?.adBlocker) {
     window.RYMPlusFeatures.adBlocker.toggle(request.blockAds);
     sendResponse({ success: true });
-  } else if (request.action === 'toggleProfileStyling' && window.RYMPlusFeatures.userProfileStyling) {
+  } else if (request.action === 'toggleProfileStyling' && window.RYMPlusFeatures?.userProfileStyling) {
     window.RYMPlusFeatures.userProfileStyling.toggle(request.fixProfileStyling);
     sendResponse({ success: true });
+  } else if (request.action === 'toggleUpcomingReleases') {
+    // Handle upcoming releases toggle directly
+    try {
+      if (typeof window.handleUpcomingReleasesToggle === 'function') {
+        window.handleUpcomingReleasesToggle({
+          action: 'toggleUpcomingReleases',
+          enabled: request.hideUpcomingReleases
+        }, sender, sendResponse);
+      } else {
+        sendResponse({ success: false, error: 'Upcoming releases handler not available' });
+      }
+    } catch (error) {
+      console.error('RYM Plus: Error handling upcoming releases toggle:', error);
+      sendResponse({ success: false, error: error.message });
+    }
   } else {
     sendResponse({ success: false, error: 'Unknown action or feature not loaded' });
   }

@@ -1,5 +1,38 @@
 # RYM Plus Extension - Changelog
 
+## v1.5.0 - Upcoming Releases Filter
+
+### Features Added
+
+#### 🗓️ Hide Upcoming Releases
+- **Feature**: Filter out unreleased albums from RateYourMusic's new releases page
+- **Location**: Extension popup → "Hide Upcoming Releases" toggle
+- **What it does**: 
+  - **Date Detection**: Parses release dates in multiple formats ("22 February 2026", "February 2026", "2026")
+  - **Future Release Filtering**: Hides albums with release dates after today's date
+  - **Performance Optimized**: Processes releases in batches to prevent browser crashes
+  - **Smart Skip Algorithm**: Automatically fast-forwards through consecutive future years
+  - **Auto-Load More**: Loads additional content when too many releases are hidden
+  - **User Feedback**: Shows "Please wait..." during processing and final hidden count
+- **Default**: Disabled (users must manually enable it) 
+- **Page Detection**: Works on all new releases pages (/new-releases, /newreleases)
+
+**Technical Implementation:**
+- **Batch Processing**: Processes 100 releases per batch with requestAnimationFrame yielding
+- **Date Caching**: Map-based caching prevents re-parsing identical dates for performance
+- **Smart Skipping**: After 40 consecutive future releases, skips ahead 150 items
+- **Processing Lock**: Prevents multiple simultaneous filtering operations
+- **DOM Integration**: Integrates with RYM's native "View More" button and AJAX loading
+- **Mutation Observers**: Monitors for new content and sort button changes
+- **CSS Classes**: Uses `.rym-plus-hidden-upcoming` for reversible hiding
+- **Architecture**: New `upcomingReleases.js` feature module with robust error handling
+
+### UI Improvements
+- **New Toggle**: Added "Hide Upcoming Releases" option to extension popup
+- **Loading Indicator**: "RYM Plus: Please wait as we filter through the RYM database."
+- **Results Counter**: "RYM Plus: Hidden X upcoming releases" (only shows when releases are visible)
+- **Settings Persistence**: Filter preference saved across browser sessions
+
 ## v1.4.0 - Advertisement Blocking
 
 ### Features Added

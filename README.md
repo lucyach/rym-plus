@@ -7,6 +7,7 @@
 - **Rating Descriptions**: Show custom tooltips for rating meanings
 - **Block Advertisements**: Hide ads and promotional content on RateYourMusic pages
 - **Spacing and Styling**: Fix spacing issues and apply RYM's native styling across pages
+- **Hide Upcoming Releases**: Filter out unreleased albums from new releases pages
 
 ## Usage
 
@@ -27,7 +28,8 @@ rym-plus/
 │   │   ├── ratingDescriptions.js
 │   │   ├── adBlocker.js
 │   │   ├── buttonStyling.js
-│   │   └── userProfileStyling.js
+│   │   ├── userProfileStyling.js
+│   │   └── upcomingReleases.js
 │   └── popup/             # Extension popup
 │       ├── popup.html
 │       ├── popup.js

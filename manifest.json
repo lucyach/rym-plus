@@ -20,6 +20,7 @@
         "src/features/adBlocker.js",
         "src/features/buttonStyling.js",
         "src/features/userProfileStyling.js",
+        "src/features/upcomingReleases.js",
         "src/content.js"
       ],
       "css": ["src/styles.css"],

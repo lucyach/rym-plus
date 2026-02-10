@@ -206,7 +206,7 @@ function removePreciseAdvertisementContainers() {
     let attempts = 0;
     while (parent && parent !== document.body && attempts < 5) {
       const style = parent.getAttribute('style') || '';
-      const className = parent.className || '';
+      const className = (parent.className && parent.className.toString) ? parent.className.toString() : (parent.className || '');
       
       // Check for ad-like characteristics
       const hasAdSize = (style.includes('300px') && style.includes('250px')) ||
@@ -289,7 +289,7 @@ function setupAdObserver() {
 }
 
 function checkAndRemoveNewAdNode(node) {
-  const className = node.className || '';
+  const className = (node.className && node.className.toString) ? node.className.toString() : (node.className || '');
   const id = node.id || '';
   
   // Only target very specific ad patterns
@@ -298,7 +298,20 @@ function checkAndRemoveNewAdNode(node) {
     'pw-ad-scroll-container',
     'GoogleCreativeContainerClass',
     'frame-div-gpt-ad',
-    'div-gpt-ad'
+    'div-gpt-ad',                 // this and above used on RYM, below are suggested
+    'adsbygoogle',            
+    'google-auto-placed',     
+    'google_ads_iframe_',       
+    'id^="google_ads_iframe_"',  
+    'safeFrameContainer',          
+    'googletag',                 
+    'gpt_unit_',                
+    'id^="div-gpt-ad-"',      
+    'data-google-query-id',    
+    'div-gpt-ad-',              
+    'gpt-ad',                
+    'gam-ad-slot',            
+    'pubads'      
   ];
   
   const isDefiniteAd = definiteAdIndicators.some(indicator => 
