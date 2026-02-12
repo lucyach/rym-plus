@@ -1,11 +1,8 @@
 // Background script - handles extension lifecycle and background tasks
-console.log('RYM Plus background script loaded');
 
 // Listen for extension installation
 chrome.runtime.onInstalled.addListener((details) => {
   if (details.reason === 'install') {
-    console.log('RYM Plus installed!');
-    
     // Set default settings
     chrome.storage.sync.set({
       'masterToggle': true,  // Extension enabled by default
@@ -17,20 +14,15 @@ chrome.runtime.onInstalled.addListener((details) => {
       'styleButtons': true,  // Synced with fixProfileStyling
       'performanceMode': false  // Performance mode for slow connections
     });
-    
-    console.log('RYM Plus initialized with default settings');
   }
 });
 
 // Listen for tab updates to show extension is active
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (changeInfo.status === 'complete' && tab.url && tab.url.includes('rateyourmusic.com')) {
-    console.log('RateYourMusic page loaded');
-    
     // Check if extension is enabled before injecting
     chrome.storage.sync.get(['masterToggle'], (result) => {
       if (result.masterToggle === false) {
-        console.log('RYM Plus is disabled, skipping injection');
         return;
       }
       
@@ -42,7 +34,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
             // Add page error recovery
             window.addEventListener('error', (e) => {
               if (e.error && e.error.message && e.error.message.includes('RYM Plus')) {
-                console.warn('RYM Plus: Recovered from error:', e.error.message);
+                // Silent recovery - no console output
               }
             });
           }
@@ -50,7 +42,7 @@ chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
           // Silently fail if script injection not possible
         });
       } catch (error) {
-        console.log('RYM Plus: Could not inject error recovery script');
+        // Silent error handling for injection failures
       }
     });
   }

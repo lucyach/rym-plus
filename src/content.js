@@ -6,7 +6,6 @@ let initializationAttempts = 0;
 const maxInitAttempts = 5;
 
 // Enhanced error handling for our extension
-const originalConsoleError = console.error;
 const extensionErrors = [];
 
 // Global error handler with recovery mechanisms
@@ -29,12 +28,9 @@ window.addEventListener('error', (event) => {
       extensionErrors.shift();
     }
     
-    console.warn('RYM Plus: Error caught and logged:', errorInfo);
-    
     // Attempt graceful recovery for critical features
     if (event.error?.message?.includes('storage') || 
         event.error?.message?.includes('chrome.')) {
-      console.log('RYM Plus: Attempting to recover from Chrome API error');
       setTimeout(() => {
         if (initializationAttempts < maxInitAttempts) {
           initializationAttempts++;
@@ -51,7 +47,6 @@ window.addEventListener('error', (event) => {
 window.addEventListener('unhandledrejection', (event) => {
   if (event.reason?.message?.includes('RYM Plus') || 
       event.reason?.stack?.includes('chrome-extension://')) {
-    console.warn('RYM Plus: Unhandled promise rejection:', event.reason);
     event.preventDefault();
   }
 });
@@ -71,23 +66,19 @@ function checkAndInitialize() {
   try {
     chrome.storage.sync.get(['masterToggle'], (result) => {
       if (chrome.runtime.lastError) {
-        console.log('RYM Plus: Could not check master toggle, proceeding with caution');
         extensionEnabled = true; // Default to enabled if we can't check
       } else {
         extensionEnabled = result.masterToggle !== false; // Default to true
       }
       
       if (extensionEnabled) {
-        console.log('RYM Plus: Extension is enabled, initializing...');
         initializeExtension();
       } else {
-        console.log('RYM Plus: Extension is disabled by user');
         // Clean up any existing modifications
         cleanupExtensionModifications();
       }
     });
   } catch (error) {
-    console.log('RYM Plus: Error checking master toggle, initializing anyway:', error);
     initializeExtension();
   }
 }
@@ -102,10 +93,8 @@ function cleanupExtensionModifications() {
     // Remove any RYM Plus added styles
     const rymPlusStyles = document.querySelectorAll('style[data-rym-plus]');
     rymPlusStyles.forEach(style => style.remove());
-    
-    console.log('RYM Plus: Cleanup completed');
   } catch (error) {
-    console.log('RYM Plus: Error during cleanup:', error);
+    // Silent error handling
   }
 }
 
@@ -113,22 +102,15 @@ function cleanupExtensionModifications() {
 function initializeExtension() {
   // Don't initialize if extension is disabled
   if (!extensionEnabled) {
-    console.log('RYM Plus: Extension disabled, skipping initialization');
     return;
   }
   
   try {
-    // Performance timing
-    const startTime = performance.now();
-    
     // Wait for feature modules with timeout
     if (typeof window.RYMPlusFeatures === 'undefined') {
       if (initializationAttempts < maxInitAttempts) {
         initializationAttempts++;
-        console.log(`RYM Plus: Waiting for features to load... (attempt ${initializationAttempts})`);
         setTimeout(initializeExtension, Math.min(100 * initializationAttempts, 1000));
-      } else {
-        console.warn('RYM Plus: Features failed to load after maximum attempts');
       }
       return;
     }
@@ -157,18 +139,15 @@ function initializeExtension() {
             // Handle both sync and async features
             if (result && typeof result.then === 'function') {
               result.then(resolve).catch((error) => {
-                console.warn(`RYM Plus: Feature '${name}' initialization failed:`, error);
                 resolve();
               });
             } else {
               resolve();
             }
           } else {
-            console.log(`RYM Plus: Feature '${name}' not available or malformed`);
             resolve();
           }
         } catch (error) {
-          console.warn(`RYM Plus: Error initializing feature '${name}':`, error);
           resolve(); // Don't fail the entire initialization
         }
       });
@@ -183,18 +162,15 @@ function initializeExtension() {
           const result = window.initUpcomingReleasesFilter();
           if (result && typeof result.then === 'function') {
             result.then(resolve).catch((error) => {
-              console.warn('RYM Plus: Upcoming releases initialization failed:', error);
               resolve();
             });
           } else {
             resolve();
           }
         } else {
-          console.log('RYM Plus: Upcoming releases feature not available');
           resolve();
         }
       } catch (error) {
-        console.warn('RYM Plus: Error initializing upcoming releases:', error);
         resolve();
       }
     });
@@ -202,18 +178,12 @@ function initializeExtension() {
     initPromises.push(upcomingReleasesPromise);
     
     // Wait for all features to initialize with timeout
+    const initPromise = Promise.all(initPromises);
     const timeoutPromise = new Promise((resolve) => {
-      setTimeout(() => {
-        console.log('RYM Plus: Initialization timeout reached, continuing...');
-        resolve();
-      }, 5000);
+      setTimeout(resolve, 5000);
     });
-    
-    Promise.race([Promise.all(initPromises), timeoutPromise]).then(() => {
-      const endTime = performance.now();
-      console.log(`RYM Plus: Initialization completed in ${Math.round(endTime - startTime)}ms`);
-      
-      // Mark page as modified by RYM Plus
+
+    Promise.race([initPromise, timeoutPromise]).then(() => {
       document.documentElement.setAttribute('data-rym-plus-loaded', 'true');
       
       // Reset initialization attempts counter on success
@@ -226,7 +196,6 @@ function initializeExtension() {
     // Attempt recovery
     if (initializationAttempts < maxInitAttempts) {
       initializationAttempts++;
-      console.log('RYM Plus: Attempting recovery...');
       setTimeout(initializeExtension, 2000);
     }
   }
@@ -239,11 +208,9 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     extensionEnabled = request.masterToggle;
     
     if (extensionEnabled) {
-      console.log('RYM Plus: Extension enabled via popup');
       initializeExtension();
       sendResponse({ success: true, message: 'Extension enabled' });
     } else {
-      console.log('RYM Plus: Extension disabled via popup');
       cleanupExtensionModifications();
       sendResponse({ success: true, message: 'Extension disabled' });
     }
@@ -277,7 +244,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         sendResponse({ success: false, error: `Feature '${action}' not available or method '${toggleMethod}' not found` });
       }
     } catch (error) {
-      console.warn(`RYM Plus: Error handling ${action}:`, error);
       sendResponse({ success: false, error: error.message });
     }
   };
@@ -312,7 +278,6 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         sendResponse({ success: false, error: 'Upcoming releases handler not available' });
       }
     } catch (error) {
-      console.warn('RYM Plus: Error handling upcoming releases toggle:', error);
       sendResponse({ success: false, error: error.message });
     }
     return true;

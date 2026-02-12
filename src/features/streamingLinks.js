@@ -10,16 +10,12 @@ function isRateYourMusicDomain() {
 function handleStreamingLinks() {
   // Only run on RateYourMusic domains
   if (!isRateYourMusicDomain()) {
-    console.log('RYM Plus: Streaming links feature restricted to RateYourMusic domains only');
     return;
   }
-  
-  console.log('RYM Plus: Initializing streaming links feature...');
   
   // Get user preference for converting streaming links
   chrome.storage.sync.get(['convertStreamingLinks'], function(result) {
     const shouldConvert = result.convertStreamingLinks !== false; // Default to true
-    console.log('RYM Plus: Streaming links conversion enabled:', shouldConvert);
     
     if (shouldConvert) {
       // Add a small delay to ensure DOM is ready
@@ -36,34 +32,24 @@ function convertStreamingLinks() {
     return;
   }
   
-  console.log('RYM Plus: Starting streaming links conversion...');
-  
   let convertedCount = 0;
   
   try {
     // Find all streaming service links
     const mediaLinks = document.querySelectorAll('.ui_media_links a[href]');
-    console.log('RYM Plus: Found', mediaLinks.length, 'media links');
     
     mediaLinks.forEach((link, index) => {
       const originalHref = link.getAttribute('href');
-      console.log(`RYM Plus: Processing link ${index + 1}:`, originalHref);
       
       let newHref = null;
       
       // Convert Spotify links
       if (originalHref.includes('open.spotify.com')) {
         newHref = convertSpotifyLink(originalHref);
-        console.log('RYM Plus: Spotify conversion result:', newHref);
       }
       // Convert Apple Music links
       else if (originalHref.includes('music.apple.com') || originalHref.includes('geo.music.apple.com')) {
         newHref = convertAppleMusicLink(originalHref);
-        if (newHref === null) {
-          console.log('RYM Plus: Apple Music conversion skipped (platform not supported)');
-        } else {
-          console.log('RYM Plus: Apple Music conversion result:', newHref);
-        }
       }
       
       // Update the link if conversion was successful
@@ -80,19 +66,11 @@ function convertStreamingLinks() {
         }
         
         convertedCount++;
-        
-        console.log(`RYM Plus: Converted ${getServiceName(originalHref)} link:`, originalHref, '->', newHref);
       }
     });
     
-    if (convertedCount > 0) {
-      console.log(`RYM Plus: Converted ${convertedCount} streaming service links to app deep links`);
-    } else {
-      console.log('RYM Plus: No streaming links were converted');
-    }
-    
   } catch (error) {
-    console.error('RYM Plus: Error converting streaming links:', error);
+    // Silent error handling for link conversion
   }
 }
 
@@ -123,7 +101,7 @@ function convertSpotifyLink(url) {
     }
     
   } catch (error) {
-    console.warn('RYM Plus: Error converting Spotify link:', url, error);
+    // Silent error handling for Spotify conversion
   }
   
   return null; // Return null if conversion failed
@@ -137,7 +115,6 @@ function convertAppleMusicLink(url) {
     if (isWindows) {
       // On Windows, Apple Music app uses different protocol or may not support deep links
       // For now, let's not convert Apple Music links on Windows
-      console.log('RYM Plus: Skipping Apple Music conversion on Windows (app deep links not reliable)');
       return null;
     }
     
@@ -169,7 +146,7 @@ function convertAppleMusicLink(url) {
     }
     
   } catch (error) {
-    console.warn('RYM Plus: Error converting Apple Music link:', url, error);
+    // Silent error handling for Apple Music conversion
   }
   
   return null; // Return null if conversion failed
@@ -188,11 +165,8 @@ function addAppleMusicFallback(link, originalUrl) {
       // Check if the page is still focused (app didn't open)
       // If page is still focused after 1 second, the app probably isn't installed
       if (document.hasFocus()) {
-        console.log('RYM Plus: Apple Music app not detected, opening web version');
         // Open the web version in a new tab
         window.open(originalUrl, '_blank');
-      } else {
-        console.log('RYM Plus: Apple Music app opened successfully');
       }
     }, 1000);
   });
@@ -201,17 +175,12 @@ function addAppleMusicFallback(link, originalUrl) {
 function toggleStreamingLinks(enabled) {
   // Only run on RateYourMusic domains
   if (!isRateYourMusicDomain()) {
-    console.log('RYM Plus: Streaming links feature restricted to RateYourMusic domains only');
     return;
   }
   
-  console.log('RYM Plus: Streaming links toggle called with enabled:', enabled);
-  
   if (enabled) {
-    console.log('RYM Plus: Streaming links conversion enabled by user');
     convertStreamingLinks();
   } else {
-    console.log('RYM Plus: Streaming links conversion disabled by user');
     restoreOriginalLinks();
   }
 }
@@ -268,10 +237,8 @@ function restoreOriginalLinks() {
       }
     });
     
-    console.log('RYM Plus: Restored original streaming links');
-    
   } catch (error) {
-    console.error('RYM Plus: Error restoring original links:', error);
+    // Silent error handling for link restoration
   }
 }
 
@@ -282,11 +249,8 @@ function setupStreamingLinksObserver() {
     return;
   }
   
-  console.log('RYM Plus: Setting up streaming links observer...');
-  
   chrome.storage.sync.get(['convertStreamingLinks'], function(result) {
     const shouldConvert = result.convertStreamingLinks !== false; // Default to true
-    console.log('RYM Plus: Observer enabled:', shouldConvert);
     
     if (shouldConvert) {
       const observer = new MutationObserver(function(mutations) {
@@ -309,7 +273,6 @@ function setupStreamingLinksObserver() {
         });
         
         if (shouldCheck) {
-          console.log('RYM Plus: New streaming links detected, converting...');
           setTimeout(convertStreamingLinks, 100); // Small delay to ensure DOM is ready
         }
       });
@@ -318,8 +281,6 @@ function setupStreamingLinksObserver() {
         childList: true,
         subtree: true
       });
-      
-      console.log('RYM Plus: Streaming links observer started');
     }
   });
 }
@@ -333,7 +294,6 @@ if (document.readyState === 'loading') {
       chrome.storage.sync.get(['convertStreamingLinks'], function(result) {
         const shouldConvert = result.convertStreamingLinks !== false;
         if (shouldConvert && isRateYourMusicDomain()) {
-          console.log('RYM Plus: Converting existing streaming links on DOM ready...');
           convertStreamingLinks();
         }
       });
@@ -346,7 +306,6 @@ if (document.readyState === 'loading') {
     chrome.storage.sync.get(['convertStreamingLinks'], function(result) {
       const shouldConvert = result.convertStreamingLinks !== false;
       if (shouldConvert && isRateYourMusicDomain()) {
-        console.log('RYM Plus: Converting existing streaming links immediately...');
         convertStreamingLinks();
       }
     });
@@ -359,6 +318,3 @@ window.RYMPlusFeatures.streamingLinks = {
   handle: handleStreamingLinks,
   toggle: toggleStreamingLinks
 };
-
-// Debug: Log that the feature is loaded
-console.log('RYM Plus: Streaming links feature loaded and exported');

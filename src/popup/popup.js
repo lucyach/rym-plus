@@ -1,7 +1,5 @@
 // Popup script - handles the extension popup UI
 document.addEventListener('DOMContentLoaded', function() {
-  console.log('RYM Plus popup loaded');
-  
   // Load saved settings
   loadSettings();
   
@@ -22,7 +20,6 @@ function setupMasterToggle() {
     
     chrome.storage.sync.set({ 'masterToggle': isEnabled }, function() {
       if (chrome.runtime.lastError) {
-        console.error('Error saving master toggle:', chrome.runtime.lastError);
         showStatus('Error saving setting', 'error');
         return;
       }
@@ -74,7 +71,6 @@ function debounce(func, wait) {
 function notifyContentScript(action, value, retries = 3) {
   chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
     if (!tabs[0] || !tabs[0].url || !tabs[0].url.includes('rateyourmusic.com')) {
-      console.log('RYM Plus: Not on a RateYourMusic page');
       return;
     }
     
@@ -85,10 +81,7 @@ function notifyContentScript(action, value, retries = 3) {
     
     chrome.tabs.sendMessage(tabs[0].id, message, function(response) {
       if (chrome.runtime.lastError) {
-        console.log('RYM Plus: Could not communicate with page:', chrome.runtime.lastError.message);
-        
         if (retries > 0) {
-          console.log(`RYM Plus: Retrying... (${retries} attempts left)`);
           setTimeout(() => {
             notifyContentScript(action, value, retries - 1);
           }, 1000);
@@ -98,10 +91,8 @@ function notifyContentScript(action, value, retries = 3) {
         return;
       }
       
-      if (response && response.success) {
-        console.log('RYM Plus: Setting applied successfully');
-      } else {
-        console.log('RYM Plus: Setting application failed:', response?.error);
+      if (response && !response.success) {
+        showStatus('Setting may not have applied', 'warning');
       }
     });
   });
@@ -117,7 +108,6 @@ function setupFeatureToggles() {
     
     chrome.storage.sync.set({ 'hideIssues': isChecked }, function() {
       if (chrome.runtime.lastError) {
-        console.error('Error saving hideIssues setting:', chrome.runtime.lastError);
         showStatus('Error saving setting', 'error');
         return;
       }
@@ -131,7 +121,6 @@ function setupFeatureToggles() {
     const isChecked = this.checked;
     chrome.storage.sync.set({ 'defaultToRatings': isChecked }, function() {
       if (chrome.runtime.lastError) {
-        console.error('Error saving defaultToRatings setting:', chrome.runtime.lastError);
         showStatus('Error saving setting', 'error');
       }
     });
@@ -143,7 +132,6 @@ function setupFeatureToggles() {
     
     chrome.storage.sync.set({ 'showRatingDescriptions': isChecked }, function() {
       if (chrome.runtime.lastError) {
-        console.error('Error saving showRatingDescriptions setting:', chrome.runtime.lastError);
         showStatus('Error saving setting', 'error');
         return;
       }
@@ -158,7 +146,6 @@ function setupFeatureToggles() {
     
     chrome.storage.sync.set({ 'blockAds': isChecked }, function() {
       if (chrome.runtime.lastError) {
-        console.error('Error saving blockAds setting:', chrome.runtime.lastError);
         showStatus('Error saving setting', 'error');
         return;
       }
@@ -173,7 +160,6 @@ function setupFeatureToggles() {
     
     chrome.storage.sync.set({ 'convertStreamingLinks': isChecked }, function() {
       if (chrome.runtime.lastError) {
-        console.error('Error saving convertStreamingLinks setting:', chrome.runtime.lastError);
         showStatus('Error saving setting', 'error');
         return;
       }
@@ -191,7 +177,6 @@ function setupFeatureToggles() {
       'styleButtons': isChecked  // Also sync button styling
     }, function() {
       if (chrome.runtime.lastError) {
-        console.error('Error saving fixProfileStyling setting:', chrome.runtime.lastError);
         showStatus('Error saving setting', 'error');
         return;
       }
@@ -206,7 +191,6 @@ function setupFeatureToggles() {
     
     chrome.storage.sync.set({ 'hideUpcomingReleases': isChecked }, function() {
       if (chrome.runtime.lastError) {
-        console.error('Error saving hideUpcomingReleases setting:', chrome.runtime.lastError);
         showStatus('Error saving setting', 'error');
         return;
       }
@@ -222,7 +206,6 @@ function loadSettings() {
     'blockAds', 'fixProfileStyling', 'hideUpcomingReleases', 'convertStreamingLinks'
   ], function(result) {
     if (chrome.runtime.lastError) {
-      console.error('Error loading settings:', chrome.runtime.lastError);
       showStatus('Error loading settings', 'error');
       return;
     }

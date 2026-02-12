@@ -16,8 +16,6 @@ function handleRatingDescriptions() {
 }
 
 function toggleRatingDescriptions(show) {
-  console.log('toggleRatingDescriptions called with:', show);
-  
   if (show) {
     addRatingDescriptions();
   } else {
@@ -123,7 +121,6 @@ function getRatingDescription(rating, callback) {
         if (descriptions && descriptions[ratingKey]) {
           callback(descriptions[ratingKey]);
         } else {
-          console.log('RYM Plus: No description found for rating:', rating);
           callback(null);
         }
       });

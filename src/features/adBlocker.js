@@ -10,7 +10,6 @@ function isRateYourMusicDomain() {
 function handleAdBlocking() {
   // Only run on RateYourMusic domains
   if (!isRateYourMusicDomain()) {
-    console.log('RYM Plus: Ad blocker restricted to RateYourMusic domains only');
     return;
   }
   
@@ -23,7 +22,6 @@ function handleAdBlocking() {
 function toggleAdBlocking(block) {
   // Only run on RateYourMusic domains
   if (!isRateYourMusicDomain()) {
-    console.log('RYM Plus: Ad blocker restricted to RateYourMusic domains only');
     return;
   }
   
@@ -40,8 +38,6 @@ function toggleAdBlocking(block) {
     // Remove our blocking CSS
     removeBlockingCSS();
     restoreBlockedElements();
-    
-    console.log('RYM Plus: Ad blocking disabled.');
   }
 }
 
@@ -175,21 +171,15 @@ function removePreciseAdElements() {
         }
       });
     } catch (error) {
-      console.error('RYM Plus: Error removing ad element:', selector, error);
+      // Silent error handling for ad element removal
     }
   });
   
   // PRECISE: Only remove containers with ADVERTISEMENT text that have ad-like characteristics
   removePreciseAdvertisementContainers();
   
-  if (removedCount > 0) {
-    console.log(`RYM Plus: Removed ${removedCount} ad elements`);
-  }
-}
-
-function isEssentialRYMContent(element) {
-  // Check if element contains essential RYM content
-  const essentialSelectors = [
+  // PRECISE: Only remove containers with ADVERTISEMENT text that have ad-like characteristics
+  removePreciseAdvertisementContainers();
     '.page_content',
     '.main_content', 
     '.album_info',
@@ -290,7 +280,6 @@ function blockAdRequests() {
   window.fetch = function(...args) {
     const url = args[0] instanceof Request ? args[0].url : args[0];
     if (typeof url === 'string' && adDomains.some(domain => url.includes(domain))) {
-      console.log('RYM Plus: Blocked ad request:', url);
       return Promise.reject(new Error('Blocked by RYM Plus'));
     }
     return window.rymPlusOriginalFetch.apply(this, args);
@@ -364,7 +353,6 @@ function checkAndRemoveNewAdNode(node) {
   if (isDefiniteAd && !isEssentialRYMContent(node)) {
     node.setAttribute('data-rym-plus-removed', 'true');
     node.style.display = 'none';
-    console.log('RYM Plus: Removed dynamic ad:', className || id);
   }
 }
 
