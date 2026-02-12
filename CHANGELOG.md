@@ -1,6 +1,6 @@
 # RYM Plus Extension - Changelog
 
-## v1.6.0 - Streaming App Deep Links
+## v1.1.0 - Streaming App Deep Links
 
 ### Features Added
 
@@ -32,7 +32,7 @@
 - **Link Indicators**: Converted links show "(App)" suffix in tooltips
 - **Seamless Integration**: Works with RYM's existing `.ui_media_links` containers
 
-## v1.5.0 - Upcoming Releases Filter
+## v1.1.0 - Upcoming Releases Filter
 
 ### Features Added
 
@@ -65,7 +65,7 @@
 - **Results Counter**: "RYM Plus: Hidden X upcoming releases" (only shows when releases are visible)
 - **Settings Persistence**: Filter preference saved across browser sessions
 
-## v1.4.0 - Advertisement Blocking
+## v1.1.0 - Advertisement Blocking
 
 ### Features Added
 
@@ -96,7 +96,7 @@
 - **User Feedback**: Clear description noting it "Might not work perfectly on all ads"
 - **Settings Persistence**: Ad blocker preference saved across browser sessions
 
-## v1.3.0 - Spacing and Styling Improvements
+## v1.1.0 - Spacing and Styling Improvements
 
 ### Features Added
 
@@ -134,7 +134,7 @@
 - **Feature Integration**: Cross-feature communication between styling modules
 - **Storage Sync**: Unified settings management for related features
 
-## v1.2.0 - Button Styling & Modular Architecture
+## v1.1.0 - Button Styling & Modular Architecture
 
 ### Features Added
 

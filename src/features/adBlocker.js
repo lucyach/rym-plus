@@ -178,8 +178,13 @@ function removePreciseAdElements() {
   // PRECISE: Only remove containers with ADVERTISEMENT text that have ad-like characteristics
   removePreciseAdvertisementContainers();
   
-  // PRECISE: Only remove containers with ADVERTISEMENT text that have ad-like characteristics
-  removePreciseAdvertisementContainers();
+  // Return count for internal use only
+  return removedCount;
+}
+
+function isEssentialRYMContent(element) {
+  // Check if element is essential RYM content that shouldn't be removed
+  const essentialSelectors = [
     '.page_content',
     '.main_content', 
     '.album_info',

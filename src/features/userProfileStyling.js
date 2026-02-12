@@ -13,6 +13,11 @@ function handleUserProfileStyling() {
       // Apply styling improvements immediately and on potential dynamic updates
       applyProfileStyling();
       
+      // Add delay for dynamic content like followers list
+      setTimeout(() => {
+        applyProfileStyling();
+      }, 1000);
+      
       // Also apply button styling
       if (window.RYMPlusFeatures.buttonStyling) {
         window.RYMPlusFeatures.buttonStyling.apply();
@@ -25,7 +30,8 @@ function handleUserProfileStyling() {
           if (mutation.type === 'childList') {
             mutation.addedNodes.forEach(function(node) {
               if (node.nodeType === Node.ELEMENT_NODE && 
-                  (node.classList?.contains('mbgen') || node.querySelector?.('.mbgen'))) {
+                  (node.classList?.contains('mbgen') || node.querySelector?.('.mbgen') ||
+                   node.id === 'ftabfriends' || node.querySelector?.('#users'))) {
                 shouldReapply = true;
               }
             });
@@ -101,6 +107,110 @@ function applyProfileStyling() {
     }
   });
   
+  // Improve followers box styling
+  const followersTable = document.querySelector('table#users.mbgen');
+  if (followersTable && !followersTable.hasAttribute('data-rym-plus-followers-styled')) {
+    followersTable.setAttribute('data-rym-plus-followers-styled', 'true');
+    
+    // Style all follower cells
+    const followerCells = followersTable.querySelectorAll('td');
+    followerCells.forEach((cell, index) => {
+      if (!cell.hasAttribute('data-rym-plus-follower-styled')) {
+        cell.setAttribute('data-rym-plus-follower-styled', 'true');
+        
+        // Store original styles
+        const originalStyle = cell.getAttribute('style') || '';
+        cell.setAttribute('data-rym-plus-original-follower-style', originalStyle);
+        
+        // Apply uniform cell styling with high specificity
+        const cellStyle = 
+          'min-height: 90px !important; width: 80px !important; height: 90px !important;' +
+          ' box-sizing: border-box !important; padding: 8px !important;' +
+          ' vertical-align: top !important; position: relative !important;' +
+          ' cursor: pointer !important; transition: background-color 0.2s !important;' +
+          ' border: 1px solid transparent !important; text-align: center !important;';
+        cell.setAttribute('style', cellStyle);
+        
+        // Make entire cell clickable
+        const userLink = cell.querySelector('a.user');
+        if (userLink) {
+          const href = userLink.getAttribute('href');
+          if (href && !cell.hasAttribute('data-rym-plus-clickable')) {
+            cell.setAttribute('data-rym-plus-clickable', href);
+            
+            // Remove pointer events from child links to prevent double-clicking
+            const childLinks = cell.querySelectorAll('a');
+            childLinks.forEach(link => {
+              const linkOriginalStyle = link.getAttribute('style') || '';
+              link.setAttribute('data-rym-plus-original-link-style', linkOriginalStyle);
+              link.setAttribute('style', linkOriginalStyle + '; pointer-events: none !important;');
+            });
+            
+            // Add click handler to entire cell
+            cell.addEventListener('click', function(e) {
+              e.preventDefault();
+              e.stopPropagation();
+              window.location.href = href;
+            });
+            
+            // Add hover effect
+            cell.addEventListener('mouseenter', function() {
+              this.style.backgroundColor = '#f0f0f0';
+            });
+            
+            cell.addEventListener('mouseleave', function() {
+              this.style.backgroundColor = 'transparent';
+            });
+          }
+        }
+        
+        // Standardize profile images
+        const profileImg = cell.querySelector('img');
+        if (profileImg) {
+          const imgOriginalStyle = profileImg.getAttribute('style') || '';
+          const imgOriginalWidth = profileImg.getAttribute('width') || '';
+          profileImg.setAttribute('data-rym-plus-original-img-style', imgOriginalStyle);
+          profileImg.setAttribute('data-rym-plus-original-width', imgOriginalWidth);
+          
+          // Remove width attribute and apply consistent styling
+          profileImg.removeAttribute('width');
+          profileImg.setAttribute('style', 
+            'width: 70px !important; height: 70px !important; object-fit: cover !important;' +
+            ' border-radius: 4px !important; display: block !important; margin: 0 auto 4px auto !important;' +
+            ' aspect-ratio: 1 / 1 !important;');
+        }
+        
+        // Style username text while preserving original font size and color
+        const usernameLink = cell.querySelector('a.user');
+        if (usernameLink) {
+          const usernameOriginalStyle = usernameLink.getAttribute('style') || '';
+          usernameLink.setAttribute('data-rym-plus-original-username-style', usernameOriginalStyle);
+          
+          // Extract existing font-size and color if present
+          const computedStyle = window.getComputedStyle(usernameLink);
+          const originalFontSize = computedStyle.fontSize;
+          const originalColor = computedStyle.color;
+          
+          usernameLink.setAttribute('style', 
+            `line-height: 1.2 !important; display: block !important; text-align: center !important;` +
+            ` word-wrap: break-word !important; max-width: 64px !important; margin: 0 auto !important;` +
+            ` font-size: ${originalFontSize}; color: ${originalColor};`);
+        }
+        
+        // Handle cells without images (profile picture missing)
+        if (!profileImg) {
+          const boldElement = cell.querySelector('b');
+          if (boldElement) {
+            const boldOriginalStyle = boldElement.getAttribute('style') || '';
+            boldElement.setAttribute('data-rym-plus-original-bold-style', boldOriginalStyle);
+            boldElement.setAttribute('style', boldOriginalStyle + 
+              '; margin-top: 20px !important; display: block !important;');
+          }
+        }
+      }
+    });
+  }
+  
   // Fix spacing between music toolbar and content tabs
   const friendsTabs = document.querySelectorAll('#ftabfriends, #ftabfavs, #ftabfavd');
   friendsTabs.forEach(tab => {
@@ -170,6 +280,88 @@ function removeProfileStyling() {
     tab.removeAttribute('data-rym-plus-original-tab-style');
   });
   
+  // Remove followers box styling
+  const followersTable = document.querySelector('table#users.mbgen[data-rym-plus-followers-styled]');
+  if (followersTable) {
+    followersTable.removeAttribute('data-rym-plus-followers-styled');
+    
+    const followerCells = followersTable.querySelectorAll('td[data-rym-plus-follower-styled]');
+    followerCells.forEach(cell => {
+      // Restore original cell style
+      const originalStyle = cell.getAttribute('data-rym-plus-original-follower-style');
+      if (originalStyle) {
+        cell.setAttribute('style', originalStyle);
+      } else {
+        cell.removeAttribute('style');
+      }
+      
+      // Remove click handler and attributes
+      cell.removeAttribute('data-rym-plus-follower-styled');
+      cell.removeAttribute('data-rym-plus-original-follower-style');
+      cell.removeAttribute('data-rym-plus-clickable');
+      
+      // Restore child link styles
+      const childLinks = cell.querySelectorAll('a[data-rym-plus-original-link-style]');
+      childLinks.forEach(link => {
+        const originalLinkStyle = link.getAttribute('data-rym-plus-original-link-style');
+        if (originalLinkStyle) {
+          link.setAttribute('style', originalLinkStyle);
+        } else {
+          link.removeAttribute('style');
+        }
+        link.removeAttribute('data-rym-plus-original-link-style');
+      });
+      
+      // Restore image styles and width attribute
+      const profileImg = cell.querySelector('img[data-rym-plus-original-img-style]');
+      if (profileImg) {
+        const originalImgStyle = profileImg.getAttribute('data-rym-plus-original-img-style');
+        const originalWidth = profileImg.getAttribute('data-rym-plus-original-width');
+        
+        if (originalImgStyle) {
+          profileImg.setAttribute('style', originalImgStyle);  
+        } else {
+          profileImg.removeAttribute('style');
+        }
+        
+        if (originalWidth) {
+          profileImg.setAttribute('width', originalWidth);
+        }
+        
+        profileImg.removeAttribute('data-rym-plus-original-img-style');
+        profileImg.removeAttribute('data-rym-plus-original-width');
+      }
+      
+      // Restore username styles
+      const usernameLink = cell.querySelector('a.user[data-rym-plus-original-username-style]');
+      if (usernameLink) {
+        const originalUsernameStyle = usernameLink.getAttribute('data-rym-plus-original-username-style');
+        if (originalUsernameStyle) {
+          usernameLink.setAttribute('style', originalUsernameStyle);
+        } else {
+          usernameLink.removeAttribute('style');
+        }
+        usernameLink.removeAttribute('data-rym-plus-original-username-style');
+      }
+      
+      // Restore bold element styles
+      const boldElement = cell.querySelector('b[data-rym-plus-original-bold-style]');
+      if (boldElement) {
+        const originalBoldStyle = boldElement.getAttribute('data-rym-plus-original-bold-style');
+        if (originalBoldStyle) {
+          boldElement.setAttribute('style', originalBoldStyle);
+        } else {
+          boldElement.removeAttribute('style');
+        }
+        boldElement.removeAttribute('data-rym-plus-original-bold-style');
+      }
+      
+      // Clone cell to remove event listeners
+      const newCell = cell.cloneNode(true);
+      cell.parentNode.replaceChild(newCell, cell);
+    });
+  }
+  
   // Stop observing
   if (window.rymPlusProfileObserver) {
     window.rymPlusProfileObserver.disconnect();
@@ -180,6 +372,11 @@ function removeProfileStyling() {
 function toggleProfileStyling(enable) {
   if (enable) {
     applyProfileStyling();
+    // Add delay for dynamic content and force re-apply
+    setTimeout(() => {
+      applyProfileStyling();
+    }, 500);
+    
     // Also enable button styling
     if (window.RYMPlusFeatures.buttonStyling) {
       window.RYMPlusFeatures.buttonStyling.apply();

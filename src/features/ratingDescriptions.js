@@ -69,7 +69,7 @@ function addRatingDescriptions() {
     // Add hover functionality for 5-star system
     const starsContainer = ratingContainer.querySelector('.rating_stars');
     if (starsContainer) {
-      // Override the existing mouse events to show our tooltip
+      // Override the existing mouse events to show our tooltip with passive listeners
       ratingContainer.addEventListener('mousemove', function(e) {
         const rect = starsContainer.getBoundingClientRect();
         const x = e.clientX - rect.left;
@@ -93,11 +93,11 @@ function addRatingDescriptions() {
         } else {
           tooltip.style.display = 'none';
         }
-      });
+      }, { passive: true });
       
       ratingContainer.addEventListener('mouseout', function() {
         tooltip.style.display = 'none';
-      });
+      }, { passive: true });
     }
   });
 }
