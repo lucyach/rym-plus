@@ -1,7 +1,19 @@
 // Ad Blocker Feature - PRECISE VERSION
 // Handles removing advertisements while preserving essential page content
 
+// Verify we're on a RateYourMusic domain
+function isRateYourMusicDomain() {
+  const hostname = window.location.hostname.toLowerCase();
+  return hostname === 'rateyourmusic.com' || hostname.endsWith('.rateyourmusic.com');
+}
+
 function handleAdBlocking() {
+  // Only run on RateYourMusic domains
+  if (!isRateYourMusicDomain()) {
+    console.log('RYM Plus: Ad blocker restricted to RateYourMusic domains only');
+    return;
+  }
+  
   // Get user preference for blocking ads
   chrome.storage.sync.get(['blockAds'], function(result) {
     toggleAdBlocking(result.blockAds === true);
@@ -9,6 +21,12 @@ function handleAdBlocking() {
 }
 
 function toggleAdBlocking(block) {
+  // Only run on RateYourMusic domains
+  if (!isRateYourMusicDomain()) {
+    console.log('RYM Plus: Ad blocker restricted to RateYourMusic domains only');
+    return;
+  }
+  
   if (block) {
     // PRECISE: Only inject specific ad blocking CSS
     injectPreciseBlockingCSS();
@@ -28,6 +46,11 @@ function toggleAdBlocking(block) {
 }
 
 function injectPreciseBlockingCSS() {
+  // Only run on RateYourMusic domains
+  if (!isRateYourMusicDomain()) {
+    return;
+  }
+  
   // Remove existing blocking CSS first
   removeBlockingCSS();
   
@@ -109,6 +132,11 @@ function removeBlockingCSS() {
 }
 
 function removePreciseAdElements() {
+  // Only run on RateYourMusic domains
+  if (!isRateYourMusicDomain()) {
+    return;
+  }
+  
   // PRECISE: Only target elements that are definitely ads
   const preciseAdSelectors = [
     // Specific Playwire containers
@@ -240,6 +268,11 @@ function restoreBlockedElements() {
 }
 
 function blockAdRequests() {
+  // Only run on RateYourMusic domains
+  if (!isRateYourMusicDomain()) {
+    return;
+  }
+  
   // Only block if not already active
   if (window.rymPlusOriginalFetch) return;
   
@@ -266,6 +299,11 @@ function blockAdRequests() {
 
 // Monitor for new ads - but be more conservative
 function setupAdObserver() {
+  // Only run on RateYourMusic domains
+  if (!isRateYourMusicDomain()) {
+    return;
+  }
+  
   chrome.storage.sync.get(['blockAds'], function(result) {
     if (result.blockAds === true) {
       const observer = new MutationObserver(function(mutations) {
@@ -289,6 +327,11 @@ function setupAdObserver() {
 }
 
 function checkAndRemoveNewAdNode(node) {
+  // Only run on RateYourMusic domains
+  if (!isRateYourMusicDomain()) {
+    return;
+  }
+  
   const className = (node.className && node.className.toString) ? node.className.toString() : (node.className || '');
   const id = node.id || '';
   

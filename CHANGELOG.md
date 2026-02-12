@@ -1,5 +1,37 @@
 # RYM Plus Extension - Changelog
 
+## v1.6.0 - Streaming App Deep Links
+
+### Features Added
+
+#### 🎵 App Deep Links
+- **Feature**: Convert streaming service links to open native applications instead of web players
+- **Location**: Extension popup → "App Deep Links" toggle
+- **What it does**: 
+  - **Spotify Integration**: Converts `https://open.spotify.com/album/` to `spotify:album:` deep links
+  - **Apple Music Integration**: Converts Apple Music web links to app deep links on macOS/iOS
+  - **Platform Detection**: Automatically detects Windows and keeps Apple Music as web links (where deep links don't work)
+  - **Visual Feedback**: Adds "(App)" indicator to converted link titles
+  - **Link Types Supported**: Albums, tracks, artists, and playlists for both services
+  - **Fallback Handling**: Graceful fallback to web players when apps aren't installed
+  - **Dynamic Monitoring**: Converts new links that appear on page updates
+- **Default**: Enabled (provides better user experience with native apps)
+- **Page Detection**: Works on all RateYourMusic album and artist pages with streaming links
+
+**Technical Implementation:**
+- **Smart Conversion**: Regex-based URL parsing for accurate ID extraction
+- **Cross-Platform Support**: Windows detection prevents problematic Apple Music deep links
+- **Reversible Changes**: Original URLs stored for restoration when feature is disabled
+- **Observer Pattern**: Mutation observer detects dynamically loaded streaming links
+- **Error Handling**: Comprehensive try-catch blocks with detailed console logging
+- **Architecture**: New `streamingLinks.js` feature module with domain-restricted execution
+- **User Control**: Toggle-based enable/disable with immediate effect
+
+### UI Improvements
+- **New Toggle**: Added "App Deep Links" option to extension popup
+- **Link Indicators**: Converted links show "(App)" suffix in tooltips
+- **Seamless Integration**: Works with RYM's existing `.ui_media_links` containers
+
 ## v1.5.0 - Upcoming Releases Filter
 
 ### Features Added

@@ -166,6 +166,21 @@ function setupFeatureToggles() {
       debouncedNotify('toggleAdBlocking', isChecked);
     });
   });
+
+  // Add event listener for convert streaming links toggle
+  document.getElementById('convertStreamingLinks').addEventListener('change', function() {
+    const isChecked = this.checked;
+    
+    chrome.storage.sync.set({ 'convertStreamingLinks': isChecked }, function() {
+      if (chrome.runtime.lastError) {
+        console.error('Error saving convertStreamingLinks setting:', chrome.runtime.lastError);
+        showStatus('Error saving setting', 'error');
+        return;
+      }
+      
+      debouncedNotify('toggleStreamingLinks', isChecked);
+    });
+  });
   
   // Add event listener for fix profile styling toggle
   document.getElementById('fixProfileStyling').addEventListener('change', function() {
@@ -204,7 +219,7 @@ function setupFeatureToggles() {
 function loadSettings() {
   chrome.storage.sync.get([
     'masterToggle', 'hideIssues', 'defaultToRatings', 'showRatingDescriptions', 
-    'blockAds', 'fixProfileStyling', 'hideUpcomingReleases'
+    'blockAds', 'fixProfileStyling', 'hideUpcomingReleases', 'convertStreamingLinks'
   ], function(result) {
     if (chrome.runtime.lastError) {
       console.error('Error loading settings:', chrome.runtime.lastError);
@@ -230,5 +245,6 @@ function loadSettings() {
     document.getElementById('blockAds').checked = result.blockAds === true;
     document.getElementById('fixProfileStyling').checked = result.fixProfileStyling === true;
     document.getElementById('hideUpcomingReleases').checked = result.hideUpcomingReleases === true;
+    document.getElementById('convertStreamingLinks').checked = result.convertStreamingLinks !== false; // Default to true
   });
 }

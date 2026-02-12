@@ -143,7 +143,8 @@ function initializeExtension() {
       { name: 'ratingDescriptions', feature: window.RYMPlusFeatures?.ratingDescriptions },
       { name: 'adBlocker', feature: window.RYMPlusFeatures?.adBlocker },
       { name: 'buttonStyling', feature: window.RYMPlusFeatures?.buttonStyling },
-      { name: 'userProfileStyling', feature: window.RYMPlusFeatures?.userProfileStyling }
+      { name: 'userProfileStyling', feature: window.RYMPlusFeatures?.userProfileStyling },
+      { name: 'streamingLinks', feature: window.RYMPlusFeatures?.streamingLinks }
     ];
     
     features.forEach(({ name, feature }) => {
@@ -286,7 +287,8 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     'toggleIssues': { path: 'RYMPlusFeatures.issues', method: 'toggle' },
     'toggleRatingDescriptions': { path: 'RYMPlusFeatures.ratingDescriptions', method: 'toggle' },
     'toggleAdBlocking': { path: 'RYMPlusFeatures.adBlocker', method: 'toggle' },
-    'toggleProfileStyling': { path: 'RYMPlusFeatures.userProfileStyling', method: 'toggle' }
+    'toggleProfileStyling': { path: 'RYMPlusFeatures.userProfileStyling', method: 'toggle' },
+    'toggleStreamingLinks': { path: 'RYMPlusFeatures.streamingLinks', method: 'toggle' }
   };
   
   if (featureMap[request.action]) {

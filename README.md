@@ -6,6 +6,7 @@
 - **Default to Ratings View**: Automatically switch to the ratings tab on user profiles
 - **Rating Descriptions**: Show custom tooltips for rating meanings
 - **Block Advertisements**: Hide ads and promotional content on RateYourMusic pages
+- **App Deep Links**: Convert streaming service links to open native apps (Spotify & Apple Music)
 - **Spacing and Styling**: Fix spacing issues and apply RYM's native styling across pages
 - **Hide Upcoming Releases**: Filter out unreleased albums from new releases pages
 
@@ -29,7 +30,8 @@ rym-plus/
 │   │   ├── adBlocker.js
 │   │   ├── buttonStyling.js
 │   │   ├── userProfileStyling.js
-│   │   └── upcomingReleases.js
+│   │   ├── upcomingReleases.js
+│   │   └── streamingLinks.js
 │   └── popup/             # Extension popup
 │       ├── popup.html
 │       ├── popup.js
