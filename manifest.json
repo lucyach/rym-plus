@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "RYM Plus",
-  "version": "1.6.0",
+  "version": "1.1.0",
   "description": "Enhanced features for RateYourMusic.com",
   "permissions": [
     "activeTab",
