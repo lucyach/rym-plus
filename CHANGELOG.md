@@ -1,5 +1,37 @@
 # RYM Plus Extension - Changelog
 
+## v1.1.1 - Rating Descriptions Auto-Sync
+
+### Privacy & Seamless Integration
+
+#### 🔄 Automatic Rating Descriptions Sync
+- **Feature**: Completely redesigned rating descriptions system with automatic RYM integration
+- **Location**: Extension popup → "Show Rating Descriptions" toggle
+- **What it does**:
+  - **Auto-Sync**: Automatically detects and syncs descriptions when you save your Rating System on RYM
+  - **RYM Integration**: Monitors `/account/rating_system_2` page for changes to your rating descriptions
+  - **Silent Operation**: Works seamlessly in the background without popups or notifications
+  - **Real-time Updates**: Descriptions immediately available in hover tooltips after syncing from RYM
+  - **Cross-Device Sync**: Uses Chrome sync storage to keep descriptions consistent across devices
+  - **Single Source of Truth**: Manage descriptions in one place (RYM's official Rating System page)
+- **Privacy Enhancement**: No personal data hardcoded in extension
+- **User Experience**: Set once on RYM, automatically available in extension
+
+#### 🔧 Simplified Interface
+- **Removed**: Manual customization interface from popup (no longer needed)
+- **Streamlined**: Clean popup with just the rating descriptions toggle
+- **Intuitive**: Clear instructions directing users to RYM's Rating System page
+- **Zero Configuration**: No setup required - just use RYM's native rating system
+
+### Technical Improvements
+- **Page Detection**: Automatically activates sync when user visits RYM Rating System page
+- **Form Monitoring**: Detects when rating descriptions are saved on RYM
+- **Smart Extraction**: Parses form fields (`sm1` to `sm10`) after page reload
+- **Change Detection**: Only syncs when descriptions actually change
+- **Error Resilience**: Comprehensive error handling with console logging
+- **Code Cleanup**: Removed all manual customization UI code and CSS
+- **Performance**: Lightweight monitoring with minimal overhead
+
 ## v1.1.0 - Streaming App Deep Links
 
 ### Features Added

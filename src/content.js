@@ -283,6 +283,23 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     return true;
   }
   
+  // Handle rating descriptions refresh
+  if (request.action === 'refreshRatingDescriptions') {
+    try {
+      // Clear cached descriptions
+      chrome.storage.local.remove('ratingDescriptions', function() {
+        // Reinitialize rating descriptions with new data
+        if (window.RYMPlusFeatures?.ratingDescriptions?.handle) {
+          window.RYMPlusFeatures.ratingDescriptions.handle();
+        }
+      });
+      sendResponse({ success: true });
+    } catch (error) {
+      sendResponse({ success: false, error: error.message });
+    }
+    return true;
+  }
+  
   // Unknown action
   sendResponse({ success: false, error: 'Unknown action or feature not loaded' });
   return false;

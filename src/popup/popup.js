@@ -224,10 +224,10 @@ function loadSettings() {
     // Set other toggles
     document.getElementById('hideIssues').checked = result.hideIssues === true;
     document.getElementById('defaultToRatings').checked = result.defaultToRatings === true;
-    document.getElementById('showRatingDescriptions').checked = result.showRatingDescriptions === true;
-    document.getElementById('blockAds').checked = result.blockAds === true;
-    document.getElementById('fixProfileStyling').checked = result.fixProfileStyling === true;
-    document.getElementById('hideUpcomingReleases').checked = result.hideUpcomingReleases === true;
-    document.getElementById('convertStreamingLinks').checked = result.convertStreamingLinks !== false; // Default to true
+    document.getElementById('showRatingDescriptions').checked = result.showRatingDescriptions !== false;
+    document.getElementById('blockAds').checked = result.blockAds !== false;
+    document.getElementById('fixProfileStyling').checked = result.fixProfileStyling !== false;
+    document.getElementById('hideUpcomingReleases').checked = result.hideUpcomingReleases === true; // default to off
+    document.getElementById('convertStreamingLinks').checked = result.convertStreamingLinks !== false; // Default to on
   });
 }

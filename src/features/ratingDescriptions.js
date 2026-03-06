@@ -2,7 +2,13 @@
 // Shows custom rating descriptions as tooltips when hovering over star ratings
 
 function handleRatingDescriptions() {
-  // Only apply on album/release pages
+  // Check if we're on the rating system page and set up auto-sync
+  if (window.location.pathname === '/account/rating_system') {
+    setupRatingSystemAutoSync();
+    return;
+  }
+  
+  // Only apply tooltip feature on album/release pages
   if (!window.location.pathname.match(/\/(release|album)\//)) {
     return;
   }
@@ -147,58 +153,71 @@ function getRatingKey(rating) {
 }
 
 function fetchRatingDescriptions(callback) {
-  fetch('/account/rating_system_2')
-    .then(response => {
-      if (!response.ok) {
-        throw new Error('Network response was not ok');
+  // Check if user has custom descriptions set
+  chrome.storage.sync.get(['customRatingDescriptions'], function(result) {
+    if (result.customRatingDescriptions && Object.keys(result.customRatingDescriptions).length > 0) {
+      // Use custom descriptions from popup settings
+      chrome.storage.local.set({ 'ratingDescriptions': result.customRatingDescriptions });
+      callback(result.customRatingDescriptions);
+    } else {
+      // No custom descriptions set, return empty object
+      callback({});
+    }
+  });
+}
+
+function setupRatingSystemAutoSync() {
+  try {
+    // Wait for page to fully load, then extract descriptions from form fields
+    setTimeout(() => {
+      const form = document.getElementById('mediumForm');
+      
+      if (!form) {
+        console.log('RYM Plus: Rating system form not found');
+        return;
       }
-      return response.text();
-    })
-    .then(html => {
-      const parser = new DOMParser();
-      const doc = parser.parseFromString(html, 'text/html');
       
+      // Extract current rating descriptions from the loaded form
       const descriptions = {};
+      let hasDescriptions = false;
       
-      // Parse each rating input field
       for (let i = 1; i <= 10; i++) {
-        const input = doc.querySelector(`#sm${i}`);
-        if (input && input.value && input.value.trim()) {
+        const input = document.getElementById(`sm${i}`);
+        if (input && input.value.trim()) {
           descriptions[`sm${i}`] = input.value.trim();
+          hasDescriptions = true;
         }
       }
       
-      // Cache the descriptions
-      chrome.storage.local.set({ 'ratingDescriptions': descriptions });
+      if (hasDescriptions) {
+        // Compare with existing stored descriptions to see if this is new data
+        chrome.storage.sync.get(['customRatingDescriptions'], function(result) {
+          const existingDescriptions = result.customRatingDescriptions || {};
+          
+          // Check if descriptions have changed
+          const hasChanges = JSON.stringify(descriptions) !== JSON.stringify(existingDescriptions);
+          
+          if (hasChanges || Object.keys(existingDescriptions).length === 0) {
+            // Save to extension storage
+            chrome.storage.sync.set({ 'customRatingDescriptions': descriptions }, function() {
+              if (chrome.runtime.lastError) {
+                return;
+              }
+              
+            });
+          }
+        });
+      }
       
-      callback(descriptions);
-    })
-    .catch(error => {
-      // Try alternative approach - check if user has any rating descriptions in current page
-      checkCurrentPageForDescriptions(callback);
-    });
+      // Also set up monitoring for future saves by watching for form submissions
+      const saveButton = document.getElementById('go');
+    }, 500); // Small delay to ensure DOM is fully loaded
+    
+    
+  } catch (error) {
+  }
 }
 
-function checkCurrentPageForDescriptions(callback) {
-  // Create some default descriptions for testing
-  const testDescriptions = {
-    'sm1': '1: terrible',
-    'sm2': '2: not for me', 
-    'sm3': '3: fine',
-    'sm4': '4: decent',
-    'sm5': '5: good',
-    'sm6': '6: pretty good',
-    'sm7': '7: fire',
-    'sm8': '8: incredible', 
-    'sm9': '9: damn near perfect',
-    'sm10': '10: favorites of all time'
-  };
-  
-  // Cache the test descriptions
-  chrome.storage.local.set({ 'ratingDescriptions': testDescriptions });
-  
-  callback(testDescriptions);
-}
 
 // Export functions for use in main content script
 window.RYMPlusFeatures = window.RYMPlusFeatures || {};
@@ -208,5 +227,6 @@ window.RYMPlusFeatures.ratingDescriptions = {
   add: addRatingDescriptions,
   remove: removeRatingDescriptions,
   getRatingKey: getRatingKey,
-  fetchDescriptions: fetchRatingDescriptions
+  fetchDescriptions: fetchRatingDescriptions,
+  setupAutoSync: setupRatingSystemAutoSync
 };
