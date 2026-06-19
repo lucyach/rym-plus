@@ -168,6 +168,20 @@ function setupFeatureToggles() {
     });
   });
   
+  // Add event listener for dark mode toggle
+  document.getElementById('darkMode').addEventListener('change', function() {
+    const isChecked = this.checked;
+
+    chrome.storage.sync.set({ 'darkMode': isChecked }, function() {
+      if (chrome.runtime.lastError) {
+        showStatus('Error saving setting', 'error');
+        return;
+      }
+
+      debouncedNotify('toggleDarkMode', isChecked);
+    });
+  });
+
   // Add event listener for fix profile styling toggle
   document.getElementById('fixProfileStyling').addEventListener('change', function() {
     const isChecked = this.checked;
@@ -203,7 +217,8 @@ function setupFeatureToggles() {
 function loadSettings() {
   chrome.storage.sync.get([
     'masterToggle', 'hideIssues', 'defaultToRatings', 'showRatingDescriptions', 
-    'blockAds', 'fixProfileStyling', 'hideUpcomingReleases', 'convertStreamingLinks'
+    'blockAds', 'fixProfileStyling', 'hideUpcomingReleases', 'convertStreamingLinks',
+    'darkMode'
   ], function(result) {
     if (chrome.runtime.lastError) {
       showStatus('Error loading settings', 'error');
@@ -229,5 +244,6 @@ function loadSettings() {
     document.getElementById('fixProfileStyling').checked = result.fixProfileStyling !== false;
     document.getElementById('hideUpcomingReleases').checked = result.hideUpcomingReleases === true; // default to off
     document.getElementById('convertStreamingLinks').checked = result.convertStreamingLinks !== false; // Default to on
+    document.getElementById('darkMode').checked = result.darkMode === true; // Default to off
   });
 }
