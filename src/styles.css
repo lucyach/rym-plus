@@ -81,3 +81,613 @@ input.rym-plus-comment-styled.btn_small {
   max-width: none !important;
   min-width: 100% !important;
 }
+
+/* =====================================================================
+   RYM Plus - Dark Mode
+   Activated by html[data-rym-plus-dark] on <html>.
+
+   Architecture:
+   1. html / body → dark base (#1e1e2e)
+   2. UNIVERSAL CONTAINER RESET — every div, section, a, li, td, tr…
+      gets background-color: transparent  and  color: #cdd6f4.
+      Because this uses !important it overrides both RYM stylesheet
+      rules AND inline style attributes (e.g. style="background:#fff").
+      This is the key fix: it catches all white cards / boxes that a
+      hand-curated class list would miss.
+   3. STRUCTURAL EXCEPTIONS — elements that need a visible background
+      (header, inputs, dropdowns, modals, rating bars…) are explicitly
+      re-coloured with more-specific selectors that beat the reset.
+   4. Links, ratings, tags, scrollbar, selection.
+
+   Real RYM class names confirmed from live DOM inspection.
+   ===================================================================== */
+
+/* ---- 0. CSS VARIABLE OVERRIDES ----
+   RYM uses --mono-* variables throughout their stylesheet for ALL colors.
+   Remapping them here fixes borders, hover states, pseudo-elements, and any
+   element not caught by the explicit rules below — including ones we haven't
+   specifically identified. This is the most comprehensive fix available. */
+html[data-rym-plus-dark] {
+  /* Light backgrounds → dark surfaces */
+  --mono-f:  #1e1e2e;   /* was #ffffff - body/base */
+  --mono-fc: #24273a;   /* was #fcfcfc */
+  --mono-f8: #24273a;   /* was #f8f8f8 */
+  --mono-f4: #24273a;   /* was #f4f4f4 */
+  --mono-f0: #24273a;   /* was #f0f0f0 */
+  --mono-e:  #313244;   /* was #eeeeee */
+  --mono-e8: #313244;   /* was #e8e8e8 */
+  --mono-d:  #45475a;   /* was #dddddd - borders */
+  --mono-c:  #45475a;   /* was #cccccc - borders */
+  --mono-b:  #585b70;   /* was #bbbbbb - muted borders */
+  /* Mid tones → muted text */
+  --mono-a:  #7f849c;   /* was #aaaaaa */
+  --mono-9:  #6c7086;   /* was #999999 */
+  --mono-8:  #6c7086;   /* was #888888 */
+  --mono-7:  #7f849c;   /* was #777777 */
+  --mono-6:  #7f849c;   /* was #666666 */
+  /* Dark → light text */
+  --mono-5:  #a6adc8;   /* was #555555 */
+  --mono-4:  #a6adc8;   /* was #444444 */
+  --mono-3:  #c3caf5;   /* was #333333 */
+  --mono-2:  #cdd6f4;   /* was #222222 */
+  --mono-1:  #cdd6f4;   /* was #111111 */
+  --mono-0:  #cdd6f4;   /* was #000000 */
+  /* Star icons - switch to the dark/eve theme variants */
+  --metadata-star: url(//e.snmc.io/3.0/img/ui/catalog/metadata/eve/svg/star.svg);
+  --metadata-star-bold: url(//e.snmc.io/3.0/img/ui/catalog/metadata/eve/svg/star_bold.svg);
+}
+
+/* ---- 1. BASE ---- */
+html[data-rym-plus-dark],
+html[data-rym-plus-dark] body {
+  background-color: #1e1e2e !important;
+  background-image: none !important; /* suppress album-art gradient RYM injects on body */
+  color: #cdd6f4 !important;
+}
+
+/* ---- 2. UNIVERSAL CONTAINER RESET ----
+   All container / layout / inline elements become transparent.
+   The dark body (#1e1e2e) shows through everything.
+   input / button / select / textarea are intentionally excluded. */
+html[data-rym-plus-dark] div:not([id^="rating_pct_"]),
+html[data-rym-plus-dark] section,
+html[data-rym-plus-dark] article,
+html[data-rym-plus-dark] aside,
+html[data-rym-plus-dark] main,
+html[data-rym-plus-dark] header,
+html[data-rym-plus-dark] footer,
+html[data-rym-plus-dark] nav,
+html[data-rym-plus-dark] ul,
+html[data-rym-plus-dark] ol,
+html[data-rym-plus-dark] li,
+html[data-rym-plus-dark] table,
+html[data-rym-plus-dark] thead,
+html[data-rym-plus-dark] tbody,
+html[data-rym-plus-dark] tfoot,
+html[data-rym-plus-dark] tr,
+html[data-rym-plus-dark] td,
+html[data-rym-plus-dark] th,
+html[data-rym-plus-dark] form,
+html[data-rym-plus-dark] fieldset,
+html[data-rym-plus-dark] a,
+html[data-rym-plus-dark] span,
+html[data-rym-plus-dark] p,
+html[data-rym-plus-dark] h1,
+html[data-rym-plus-dark] h2,
+html[data-rym-plus-dark] h3,
+html[data-rym-plus-dark] h4,
+html[data-rym-plus-dark] h5,
+html[data-rym-plus-dark] h6,
+html[data-rym-plus-dark] label,
+html[data-rym-plus-dark] strong,
+html[data-rym-plus-dark] em,
+html[data-rym-plus-dark] caption,
+html[data-rym-plus-dark] blockquote,
+html[data-rym-plus-dark] pre,
+html[data-rym-plus-dark] code {
+  background-color: transparent !important;
+  color: #cdd6f4 !important;
+}
+
+/* ---- 3. STRUCTURAL EXCEPTIONS ---- */
+
+/* HEADER  (RYM: <header id="page_header">)
+   ID selector beats the element-type reset above. */
+html[data-rym-plus-dark] #page_header {
+  background-color: #181825 !important;
+  border-bottom: 1px solid #585b70 !important;
+}
+
+/* HEADER DROPDOWN MENUS — profile/more menus that float below the header bar.
+   Use #id selector (1,1,1 specificity) to guarantee beating the div:not reset (0,2,2). */
+html[data-rym-plus-dark] #header_extended_section,
+html[data-rym-plus-dark] div.header_extended_section {
+  background: #181825 !important;
+  background-color: #181825 !important;
+  border: 1px solid #585b70 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+}
+html[data-rym-plus-dark] .header_extended_section a.header_item,
+html[data-rym-plus-dark] .header_extended_section .header_item {
+  color: #cdd6f4 !important;
+  border-bottom-color: #313244 !important;
+}
+html[data-rym-plus-dark] .header_extended_section a.header_item:hover,
+html[data-rym-plus-dark] .header_extended_section .header_item:hover {
+  background-color: #313244 !important;
+  color: #cdd6f4 !important;
+}
+html[data-rym-plus-dark] div.header_theme_buttons {
+  background-color: #24273a !important;
+  border-top: 1px solid #313244 !important;
+}
+html[data-rym-plus-dark] div.header_theme_button {
+  background-color: transparent !important;
+  color: #a6adc8 !important;
+  border-right: 1px solid #313244 !important;
+}
+html[data-rym-plus-dark] div.header_theme_button:hover {
+  background-color: #313244 !important;
+  color: #cdd6f4 !important;
+}
+
+/* MOBILE MENU DRAWER (hidden off-canvas nav, needs solid dark bg) */
+html[data-rym-plus-dark] #mobile_header_menu,
+html[data-rym-plus-dark] .mobile_header_menu {
+  background-color: #181825 !important;
+  border-bottom: 1px solid #585b70 !important;
+}
+html[data-rym-plus-dark] .mobile_header_menu_item {
+  background-color: transparent !important;
+  border-bottom: 1px solid #313244 !important;
+}
+
+/* SEARCH BOX — header and full-page search bar */
+html[data-rym-plus-dark] .ui_search,
+html[data-rym-plus-dark] .ui_search_frame,
+html[data-rym-plus-dark] .ui_search_frame_inner {
+  background-color: #313244 !important;
+  border-color: #585b70 !important;
+}
+
+html[data-rym-plus-dark] .ui_search_rest,
+html[data-rym-plus-dark] .ui_search_type {
+  background-color: #313244 !important;
+}
+
+/* The actual search <input> — .ui_search_input has no type attribute on the full-page form */
+html[data-rym-plus-dark] .ui_search_input {
+  background-color: #313244 !important;
+  color: #cdd6f4 !important;
+  border: none !important;
+  outline: none !important;
+}
+
+/* Search-results DROPDOWN floats above page — needs solid background */
+html[data-rym-plus-dark] .ui_search_results_frame,
+html[data-rym-plus-dark] .ui_search_results {
+  background-color: #313244 !important;
+  border: 1px solid #585b70 !important;
+}
+
+/* Individual result rows in the dropdown */
+html[data-rym-plus-dark] .ui_search_result {
+  background-color: transparent !important;
+  border-bottom: 1px solid #45475a !important;
+}
+html[data-rym-plus-dark] .ui_search_result:hover {
+  background-color: #45475a !important;
+}
+html[data-rym-plus-dark] .ui_search_result_info_name {
+  color: #89b4fa !important;
+}
+html[data-rym-plus-dark] .ui_search_result_info_subtext,
+html[data-rym-plus-dark] .ui_search_result_date_loc_info,
+html[data-rym-plus-dark] .ui_search_result_genres,
+html[data-rym-plus-dark] .ui_search_result_music_performers,
+html[data-rym-plus-dark] .ui_search_result_relevant_aka {
+  color: #a6adc8 !important;
+}
+html[data-rym-plus-dark] .ui_search_result_image_bkg {
+  background-color: #313244 !important;
+}
+
+/* ---- FULL-PAGE SEARCH RESULTS (/search?...) ---- */
+/* Infobox rows: alternating dark shades for readability */
+html[data-rym-plus-dark] tr.infobox {
+  background-color: #24273a !important;
+}
+html[data-rym-plus-dark] tr.infobox:hover {
+  background-color: #313244 !important;
+}
+/* Inner release-details table (.mbgen) — shown inside each result row */
+html[data-rym-plus-dark] table.mbgen {
+  background-color: transparent !important;
+  border-top-color: #45475a !important;
+}
+html[data-rym-plus-dark] table.mbgen td {
+  color: #cdd6f4 !important;
+  background-color: transparent !important;
+  border-color: #45475a !important;
+}
+/* Secondary text classes used in search results */
+html[data-rym-plus-dark] .smallgray,
+html[data-rym-plus-dark] a.smallgray {
+  color: #a6adc8 !important;
+}
+html[data-rym-plus-dark] .subinfo {
+  color: #7f849c !important;
+}
+html[data-rym-plus-dark] .smallgreen,
+html[data-rym-plus-dark] a.smallgreen {
+  color: #89b4fa !important;
+}
+/* Artist/release/label link classes in search results */
+html[data-rym-plus-dark] a.searchpage,
+html[data-rym-plus-dark] a.artist,
+html[data-rym-plus-dark] a.label {
+  color: #89b4fa !important;
+}
+/* Section headings like "Releases", "Artists" */
+html[data-rym-plus-dark] .page_search_results h3 {
+  color: #cdd6f4 !important;
+  border-bottom: 1px solid #45475a !important;
+}
+
+/* HEADER NOTIFICATION BANNERS */
+html[data-rym-plus-dark] .header_error {
+  background-color: rgba(243, 139, 168, 0.15) !important;
+  color: #f38ba8 !important;
+  border: 1px solid #f38ba8 !important;
+}
+
+html[data-rym-plus-dark] .header_message {
+  background-color: rgba(166, 227, 161, 0.15) !important;
+  color: #a6e3a1 !important;
+  border: 1px solid #a6e3a1 !important;
+}
+
+/* FOOTER  (RYM: .footer_inner inside the footer element) */
+html[data-rym-plus-dark] .footer_inner {
+  background-color: #181825 !important;
+  border-top: 1px solid #585b70 !important;
+}
+
+/* CONTENT CARDS — give slight elevation so they stand out from the body */
+
+/* Genres page: the white card per genre */
+html[data-rym-plus-dark] div.page_genre_index_hierarchy_item_main {
+  background-color: #24273a !important;
+  border: 1px solid #45475a !important;
+}
+
+/* Genres page: fade cover — white-to-transparent gradient overlay that masks truncated
+   content. Override with a dark-to-transparent gradient matching the body background. */
+html[data-rym-plus-dark] .page_section_dynamic_fade_cover {
+  background: linear-gradient(to bottom, transparent, #1e1e2e) !important;
+}
+
+/* "Show N subgenres" expand button */
+html[data-rym-plus-dark] .page_genre_index_hierarchy_item_expand,
+html[data-rym-plus-dark] .page_section_dynamic_fade_expand_button,
+html[data-rym-plus-dark] .button_expand {
+  background-color: #45475a !important;
+  border: 1px solid #585b70 !important;
+}
+
+/* Homepage: featured review / banner cards.
+   Using div.classname to match the (0,2,2) specificity of the div:not(...) reset,
+   so these rules win the !important tie by appearing later in the stylesheet. */
+html[data-rym-plus-dark] div.ui_featured_content_comment,
+html[data-rym-plus-dark] div.ui_featured_content_review,
+html[data-rym-plus-dark] div.page_home_section_featured_content_content_item_banner,
+html[data-rym-plus-dark] div.page_feature_main_inner {
+  background-color: #24273a !important;
+  border: 1px solid #45475a !important;
+}
+
+/* Profile page: bubble header / content (real classes from DOM) */
+html[data-rym-plus-dark] div.bubble_header {
+  background-color: #313244 !important;
+  border-bottom: 1px solid #585b70 !important;
+}
+
+html[data-rym-plus-dark] div.bubble_content {
+  background-color: #24273a !important;
+}
+
+/* Profile "Listening to" widget */
+html[data-rym-plus-dark] div.profile_listening_container {
+  background-color: #24273a !important;
+  border: 1px solid #45475a !important;
+}
+
+html[data-rym-plus-dark] div.profilesearch {
+  background-color: #313244 !important;
+  border: 1px solid #585b70 !important;
+}
+
+html[data-rym-plus-dark] div.credited_list_inner,
+html[data-rym-plus-dark] div.smallcomment_area {
+  background-color: #24273a !important;
+  border: 1px solid #45475a !important;
+}
+
+/* Release / chart pages: section cards.
+   NOTE: .page_section is intentionally excluded — it is a generic layout
+   wrapper used on every page (nav bars, share bars, ad containers, etc.)
+   and should remain transparent so it blends into the body. */
+html[data-rym-plus-dark] div.section_outer,
+html[data-rym-plus-dark] div.section_inner {
+  background-color: #24273a !important;
+  border: 1px solid #45475a !important;
+}
+
+html[data-rym-plus-dark] div.section_header_outer,
+html[data-rym-plus-dark] div.section_header {
+  background-color: #313244 !important;
+  border-bottom: 1px solid #585b70 !important;
+}
+
+/* ---- CHARTS PAGE ---- */
+/* Chart row items — alternating bg for readability */
+html[data-rym-plus-dark] div.page_charts_section_charts_item {
+  background-color: #24273a !important;
+  border-bottom: 1px solid #313244 !important;
+}
+html[data-rym-plus-dark] div.page_charts_section_charts_item:nth-child(even) {
+  background-color: #1e2030 !important;
+}
+/* Version selector and settings panels */
+html[data-rym-plus-dark] div.page_charts_section_charts_version_selector,
+html[data-rym-plus-dark] div.page_charts_settings_summary,
+html[data-rym-plus-dark] div.page_chart_query_become_subscriber,
+html[data-rym-plus-dark] div.release_type_chooser,
+html[data-rym-plus-dark] div.page_charts_recommendations_banner {
+  background-color: #24273a !important;
+  border: 1px solid #45475a !important;
+}
+/* Chart scope/share bar */
+html[data-rym-plus-dark] .page_charts_section_scope_share_inner {
+  background-color: transparent !important;
+}
+
+/* ---- ARTIST PAGE ---- */
+/* Biography and rough guide panels */
+html[data-rym-plus-dark] div.section_artist_biography,
+html[data-rym-plus-dark] div.rough_guide_text {
+  background-color: #24273a !important;
+  border: 1px solid #45475a !important;
+}
+html[data-rym-plus-dark] div.rough_guide_link {
+  background-color: #313244 !important;
+  border: 1px solid #45475a !important;
+}
+/* Comment header (e.g. "Rough Guide to Radiohead") */
+html[data-rym-plus-dark] div.comment_header {
+  background-color: #313244 !important;
+  border-bottom: 1px solid #585b70 !important;
+}
+/* Discography expand buttons */
+html[data-rym-plus-dark] div.disco_expandissues,
+html[data-rym-plus-dark] div.disco_expand_section_btn,
+html[data-rym-plus-dark] div.disco_expandcat {
+  background-color: #45475a !important;
+  color: #cdd6f4 !important;
+  border: 1px solid #585b70 !important;
+}
+html[data-rym-plus-dark] div.disco_expandissues:hover,
+html[data-rym-plus-dark] div.disco_expand_section_btn:hover {
+  background-color: #585b70 !important;
+}
+/* Disco search box */
+html[data-rym-plus-dark] div.disco_search {
+  background-color: #313244 !important;
+  border: 1px solid #585b70 !important;
+}
+
+/* ---- HELP BUBBLES / TOOLTIPS ---- */
+html[data-rym-plus-dark] div.help_bubble,
+html[data-rym-plus-dark] div.help_bubble_content {
+  background-color: #313244 !important;
+  border: 1px solid #585b70 !important;
+  color: #cdd6f4 !important;
+}
+
+/* ---- INPUTS / FORMS / SELECT ---- */
+html[data-rym-plus-dark] input[type="text"],
+html[data-rym-plus-dark] input[type="search"],
+html[data-rym-plus-dark] input[type="email"],
+html[data-rym-plus-dark] input[type="password"],
+html[data-rym-plus-dark] input[type="url"],
+html[data-rym-plus-dark] input[type="number"],
+html[data-rym-plus-dark] input[type="tel"],
+html[data-rym-plus-dark] textarea,
+html[data-rym-plus-dark] select,
+html[data-rym-plus-dark] input:not([type]),
+html[data-rym-plus-dark] input[type="date"] {
+  background-color: #313244 !important;
+  color: #cdd6f4 !important;
+  border: 1px solid #585b70 !important;
+}
+
+/* Radio buttons and checkboxes */
+html[data-rym-plus-dark] input[type="radio"],
+html[data-rym-plus-dark] input[type="checkbox"] {
+  accent-color: #89b4fa !important;
+  border: 1px solid #585b70 !important;
+}
+
+html[data-rym-plus-dark] input::placeholder,
+html[data-rym-plus-dark] textarea::placeholder {
+  color: #7f849c !important;
+  opacity: 1 !important;
+}
+
+html[data-rym-plus-dark] select option {
+  background-color: #313244 !important;
+  color: #cdd6f4 !important;
+}
+
+/* ---- BUTTONS ---- */
+html[data-rym-plus-dark] button,
+html[data-rym-plus-dark] .btn,
+html[data-rym-plus-dark] .ui_button,
+html[data-rym-plus-dark] input[type="submit"],
+html[data-rym-plus-dark] input[type="button"],
+html[data-rym-plus-dark] input[type="reset"] {
+  background-color: #313244 !important;
+  color: #cdd6f4 !important;
+  border: 1px solid #585b70 !important;
+}
+
+html[data-rym-plus-dark] button:hover,
+html[data-rym-plus-dark] .btn:hover,
+html[data-rym-plus-dark] .ui_button:hover,
+html[data-rym-plus-dark] input[type="submit"]:hover,
+html[data-rym-plus-dark] input[type="button"]:hover {
+  background-color: #45475a !important;
+}
+
+/* RYM Plus blue action buttons — preserved */
+html[data-rym-plus-dark] .blue_btn,
+html[data-rym-plus-dark] .btn.blue_btn {
+  background-color: #1e5399 !important;
+  color: #fff !important;
+  border-color: #1e5399 !important;
+}
+
+html[data-rym-plus-dark] .blue_btn:hover,
+html[data-rym-plus-dark] .btn.blue_btn:hover {
+  background-color: #2a6bb3 !important;
+}
+
+/* ---- LINKS ---- */
+html[data-rym-plus-dark] a {
+  color: #89b4fa !important;
+}
+html[data-rym-plus-dark] a:hover {
+  color: #b4d0fd !important;
+}
+html[data-rym-plus-dark] .footer_inner a { color: #7f849c !important; }
+html[data-rym-plus-dark] .footer_inner a:hover { color: #89b4fa !important; }
+
+/* ---- USER REFERENCES ----
+   .userd = deleted/non-existent user span.
+   .user  = active user <a> link (also covered by the `a` rule, but repeated here
+            with higher specificity to beat any RYM per-page overrides).
+   .contributors = container span — only the separator commas live here,
+                   so we do NOT set a color on it (avoids interfering with children). */
+html[data-rym-plus-dark] .userd,
+html[data-rym-plus-dark] span.userd {
+  color: #a6adc8 !important;
+}
+html[data-rym-plus-dark] .contributor {
+  color: #a6adc8 !important;
+}
+html[data-rym-plus-dark] a.user,
+html[data-rym-plus-dark] .contributors a.user,
+html[data-rym-plus-dark] .contributor a.user {
+  color: #89b4fa !important;
+}
+
+/* ---- ICON ELEMENTS (<i> for Font Awesome) ----
+   NOT included in the universal reset. <i> elements inherit color from their
+   parent container (which already has #cdd6f4 from our div/span/a rules).
+   This allows RYM's per-icon brand color rules (e.g. .fa-facebook-square)
+   to apply normally without being overridden by an !important rule here. */
+
+/* ---- RATINGS ---- */
+html[data-rym-plus-dark] .ratingscore,
+html[data-rym-plus-dark] .avg_rating_num,
+html[data-rym-plus-dark] .release_avg_num,
+html[data-rym-plus-dark] .chartlist_rating,
+html[data-rym-plus-dark] .chart_rating {
+  color: #f9e2af !important;
+}
+
+/* Rating distribution bars — RYM sets individual colors per rating (1=red → 10=green)
+   via inline <style> #rating_pct_N { background: ... } rules. Let those show through.
+   Only override the track/background container. */
+html[data-rym-plus-dark] .rating_bar_outer,
+html[data-rym-plus-dark] .rating_bar_wrapper,
+html[data-rym-plus-dark] [class*="rating_bar_bg"] {
+  background-color: #45475a !important;
+}
+
+/* ---- GENRE / TAG PILLS ---- */
+html[data-rym-plus-dark] .genre_link,
+html[data-rym-plus-dark] .tag_link,
+html[data-rym-plus-dark] a.genre_link,
+html[data-rym-plus-dark] a.tag_link {
+  background-color: #313244 !important;
+  color: #89b4fa !important;
+  border: 1px solid #585b70 !important;
+}
+
+html[data-rym-plus-dark] a.genre_link:hover,
+html[data-rym-plus-dark] a.tag_link:hover {
+  background-color: #45475a !important;
+  color: #b4d0fd !important;
+}
+
+/* ---- MODALS / OVERLAYS (float above content — need solid background) ---- */
+html[data-rym-plus-dark] .modal_content,
+html[data-rym-plus-dark] .modal_parent_frame_inner,
+html[data-rym-plus-dark] .modal_parent_frame_inner_level_2 {
+  background-color: #313244 !important;
+  border: 1px solid #585b70 !important;
+}
+
+html[data-rym-plus-dark] .modal_overlay {
+  background-color: rgba(30, 30, 46, 0.85) !important;
+}
+
+/* ---- TOOLTIP ---- */
+html[data-rym-plus-dark] .tooltip,
+html[data-rym-plus-dark] .ui-tooltip,
+html[data-rym-plus-dark] [class*="tooltip"] {
+  background-color: #313244 !important;
+  color: #cdd6f4 !important;
+  border: 1px solid #585b70 !important;
+}
+
+/* ---- RYM Plus own extension buttons ---- */
+html[data-rym-plus-dark] .rym-plus-friend-details-btn,
+html[data-rym-plus-dark] .rym-plus-extension-button {
+  background-color: #1e5399 !important;
+  color: #fff !important;
+  border: none !important;
+}
+
+/* ---- HR ---- */
+html[data-rym-plus-dark] hr {
+  border-color: #585b70 !important;
+  background-color: #585b70 !important;
+}
+
+/* ---- SCROLLBAR ---- */
+html[data-rym-plus-dark] ::-webkit-scrollbar {
+  width: 10px;
+  background-color: #181825;
+}
+
+html[data-rym-plus-dark] ::-webkit-scrollbar-track {
+  background-color: #181825;
+}
+
+html[data-rym-plus-dark] ::-webkit-scrollbar-thumb {
+  background-color: #45475a;
+  border-radius: 5px;
+  border: 2px solid #181825;
+}
+
+html[data-rym-plus-dark] ::-webkit-scrollbar-thumb:hover {
+  background-color: #585b70;
+}
+
+/* ---- SELECTION ---- */
+html[data-rym-plus-dark] ::selection {
+  background-color: #364273 !important;
+  color: #cdd6f4 !important;
+}
