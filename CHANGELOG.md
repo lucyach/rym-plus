@@ -1,5 +1,14 @@
 # RYM Plus Extension - Changelog
 
+## v1.2.0 - Dark Mode
+
+### Features Added
+
+#### 🌙 Dark Mode
+- **Feature**: Site-wide dark mode for RYM
+- **Location**: Extension popup → "Dark Mode" toggle
+- **What it does**: Applies a dark theme across all RYM pages, reducing eye strain in low-light environments
+
 ## v1.1.1 - Rating Descriptions Auto-Sync
 
 ### Privacy & Seamless Integration
